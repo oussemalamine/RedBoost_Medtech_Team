@@ -1,0 +1,14 @@
+.contactSection {
+
+  border: solid 1px black;
+  margin: 10px;
+  padding: 10px;
+}
+
+.sectionTitle {
+  color: rgb(0, 0, 82);
+  font-weight: bold;
+  font-size: 18px;
+
+}
+
