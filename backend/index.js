@@ -130,7 +130,15 @@ app.post("/uploadLogo", upload.single("logo"), (req, res) => {
 
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(helmet());
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      defaultSrc: ["'self'"],
+      imgSrc: ["'self'", "data:", "https://res.cloudinary.com/"],
+      // Add other directives as needed
+    },
+  })
+);
 
 // Serve static files from the React app
 app.use(express.static(path.join(__dirname, "../frontend/build")));

@@ -126,7 +126,7 @@ const TaskValidation = () => {
           .includes(searchTermLowerCase) ||
         taskStatus.includes(searchTermLowerCase) ||
         task.xpPoints.toString().includes(searchTermLowerCase) ||
-        task.targetDate.includes(searchTermLowerCase)
+        task.endDate.includes(searchTermLowerCase)
       )
     }
   })
@@ -225,8 +225,8 @@ const TaskValidation = () => {
                 <CTableDataCell onClick={() => handleSort('xpPoints')}>
                   Points {sortBy === 'xpPoints' && renderSortIcon('xpPoints')}
                 </CTableDataCell>
-                <CTableDataCell onClick={() => handleSort('targetDate')}>
-                  Release Date {sortBy === 'targetDate' && renderSortIcon('targetDate')}
+                <CTableDataCell onClick={() => handleSort('endDate')}>
+                  Release Date {sortBy === 'endDate' && renderSortIcon('endDate')}
                 </CTableDataCell>
                 <CTableDataCell>Actions</CTableDataCell>
               </CTableRow>
@@ -245,7 +245,7 @@ const TaskValidation = () => {
                     </CTableDataCell>
                     <CTableDataCell>{task.xpPoints}XP</CTableDataCell>
                     <CTableDataCell>
-                      {new Date(task.targetDate).toLocaleDateString()}
+                      {new Date(task.endDate).toLocaleDateString()}
                     </CTableDataCell>
                     <CTableDataCell>
                       {task.status !== 'valid' && (
