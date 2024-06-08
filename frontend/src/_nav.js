@@ -35,7 +35,7 @@ const _nav = [
       {
         component: CNavItem,
         name: 'Add new Contact',
-        to: 'CreateContact',
+        to: 'category',
       },
 
       {
