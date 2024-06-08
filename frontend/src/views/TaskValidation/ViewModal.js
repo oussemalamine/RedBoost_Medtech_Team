@@ -89,7 +89,7 @@ function ViewModal({ showModal, setShowModal, selectedTask, setSelectedTask }) {
         </div>
         <div className="mb-3">
           <CFormInput
-            value={formatDate(selectedTask.targetDate)}
+            value={formatDate(selectedTask.endDate)}
             type="date"
             name="targetDate"
             id="taskDate"

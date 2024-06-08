@@ -219,7 +219,7 @@ const Task = ({ task }) => {
                   </p>
                   <p className="card-text">
                     <strong>Target Date:</strong>{' '}
-                    {currentTask.targetDate ? formatDate(currentTask.targetDate) : 'No target date set'}
+                    {currentTask.endDate ? formatDate(currentTask.endDate) : 'No target date set'}
                   </p>
 
                   <p className="card-text">
