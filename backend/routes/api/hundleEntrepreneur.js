@@ -3,11 +3,21 @@ const router = express.Router();
 const Entrepreneur = require('../../database/models/entrepreneurSchema');
 
 // Route to create a new entrepreneur
-router.post('/createEntrepreneur', async (req, res) => {
+router.post('/createntrepreneurs', async (req, res) => {
+  const { nom, prenom, email, nombreCofondateurs, nombreCofondateursFemmes } = req.body;
+
+  if (!nom || !prenom || !email || nombreCofondateurs === undefined || nombreCofondateursFemmes === undefined) {
+    return res.status(400).json({ message: 'All fields are required.' });
+  }
+
+  if (Number(nombreCofondateursFemmes) > Number(nombreCofondateurs)) {
+    return res.status(400).json({ message: 'Nombre Cofondateurs Femmes cannot be greater than Nombre Cofondateurs.' });
+  }
+
   try {
     const entrepreneur = new Entrepreneur(req.body);
     await entrepreneur.save();
-    res.status(201).send(entrepreneur);
+    res.status(201).json(entrepreneur);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }

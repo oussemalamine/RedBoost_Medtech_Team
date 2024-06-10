@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { FaUser } from 'react-icons/fa';
+
 import { CContainer, CCard, CCardBody, CCardHeader, CCol, CFormInput, CRow, CButton, CTable, CTableHead, CTableBody, CTableHeaderCell, CTableDataCell } from '@coreui/react';
 import { FcContacts } from "react-icons/fc";
 import AdvancedFilter from './AdvancedFilter';
