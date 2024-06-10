@@ -1,7 +1,6 @@
-import React from 'react'
-import { useSelector } from 'react-redux'
-import classNames from 'classnames'
-
+import React from 'react';
+import { useSelector } from 'react-redux';
+import classNames from 'classnames';
 import {
   CAvatar,
   CButton,
@@ -19,32 +18,34 @@ import {
   CTableHead,
   CTableHeaderCell,
   CTableRow,
-} from '@coreui/react'
-import CIcon from '@coreui/icons-react'
-import { cilPeople } from '@coreui/icons'
-
-import WidgetsBrand from '../widgets/WidgetsBrand'
-import WidgetsDropdown from '../widgets/WidgetsDropdown'
-import MainChart from './MainChart'
+} from '@coreui/react';
+import CIcon from '@coreui/icons-react';
+import { cilPeople } from '@coreui/icons';
+import WidgetsBrand from '../widgets/WidgetsBrand';
+import WidgetsDropdown from '../widgets/WidgetsDropdown';
+import MainChart from './MainChart';
+import userAvatar from '../../components/Images/user.png';
+import FullCalendar from '@fullcalendar/react';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import './Dashboard.css'; 
 import TaskCalendar from './TaskCalendar'
-import userAvatar from '../../components/Images/user.png'
 
 const Dashboard = () => {
-  const users = useSelector((state) => state.usersSlice.users)
-  console.log('users : ', users)
+  const users = useSelector((state) => state.usersSlice.users);
+  console.log('users : ', users);
 
   return (
     <>
       {/* Top Cards */}
       <WidgetsDropdown users={users} className="mb-4" />
-      
+
       {/* Online Users Section */}
       <CRow>
-        <CCol xs>
+        <CCol xs={6}>
           <CCard className="mb-4">
             <CCardHeader>Online Users</CCardHeader>
             <CCardBody>
-              <CTable align="middle" className="mb-0 border" hover responsive>
+              <CTable align="middle" className="mb-0 border table-sm" hover responsive>
                 <CTableHead className="text-nowrap">
                   <CTableRow>
                     <CTableHeaderCell className="bg-body-tertiary text-center">
@@ -69,13 +70,11 @@ const Dashboard = () => {
                       </CTableDataCell>
                       <CTableDataCell>
                         <div>{user.username}</div>
-
                       </CTableDataCell>
                       <CTableDataCell className="text-center">{user.birthday}</CTableDataCell>
                       <CTableDataCell>{user.email}</CTableDataCell>
                       <CTableDataCell className="text-center">{user.phone}</CTableDataCell>
                       <CTableDataCell>
-
                         <div className="fw-semibold text-nowrap">{user.role}</div>
                       </CTableDataCell>
                     </CTableRow>
@@ -85,16 +84,18 @@ const Dashboard = () => {
             </CCardBody>
           </CCard>
         </CCol>
+        <CCol xs={6}>
+          <CCard className="mb-4">
+            <CCardHeader>Calendar</CCardHeader>
+            <CCardBody>
+              <TaskCalendar/>
+            </CCardBody>
+          </CCard>
+        </CCol>
       </CRow>
-      {/* Task Calendar */}
-      <CCard className="mb-4">
-        <CCardHeader>Task Calendar</CCardHeader>
-        <CCardBody>
-          <TaskCalendar />
-        </CCardBody>
-      </CCard>
-    </>
-  )
-}
 
-export default Dashboard
+    </>
+  );
+};
+
+export default Dashboard;
