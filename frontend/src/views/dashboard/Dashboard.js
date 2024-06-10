@@ -26,6 +26,7 @@ import { cilPeople } from '@coreui/icons'
 import WidgetsBrand from '../widgets/WidgetsBrand'
 import WidgetsDropdown from '../widgets/WidgetsDropdown'
 import MainChart from './MainChart'
+import TaskCalendar from './TaskCalendar'
 import userAvatar from '../../components/Images/user.png'
 
 const Dashboard = () => {
@@ -85,9 +86,13 @@ const Dashboard = () => {
           </CCard>
         </CCol>
       </CRow>
-      
-      {/* Main Chart */}
-      <MainChart/>
+      {/* Task Calendar */}
+      <CCard className="mb-4">
+        <CCardHeader>Task Calendar</CCardHeader>
+        <CCardBody>
+          <TaskCalendar />
+        </CCardBody>
+      </CCard>
     </>
   )
 }

@@ -1,4 +1,8 @@
+<<<<<<< Updated upstream
 import React, { useEffect, useState } from 'react';
+=======
+/*import React, { useEffect } from 'react';
+>>>>>>> Stashed changes
 import { useSelector, useDispatch } from 'react-redux';
 import { loadEntrepreneurs } from '../../app/features/entrepreneursData/entrepreneursSlice'; // adjust the path
 import { CChart } from '@coreui/react-chartjs';
@@ -316,6 +320,10 @@ return (
 />
     </div>
 );
+<<<<<<< Updated upstream
 };
 
 export default ProgramsStatistics;
+=======
+}*/
+>>>>>>> Stashed changes
