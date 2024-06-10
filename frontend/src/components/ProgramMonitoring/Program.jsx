@@ -37,7 +37,7 @@ import dayGridPlugin from '@fullcalendar/daygrid'
 import AddActivity from './AddActivity'
 import { useNavigate } from 'react-router-dom'
 import classNames from 'classnames'
-const EventList = ({ events }) => {
+const EventList = ({ events ,program ,navigate }) => {
   const itemsPerPage = 5
   const [currentPage, setCurrentPage] = useState(1)
 
@@ -63,6 +63,13 @@ const EventList = ({ events }) => {
     }
   }
 
+  const handleDateClickList = (activity) => {
+    console.log('activity', activity)
+    // Navigate to the activity details page without reloading the entire app
+    navigate(`/Dash/Monitoring/${program.programTitle}/${activity.name}`)
+  }
+  
+
   return (
     <>
       <CTable striped responsive className="text-center">
@@ -75,7 +82,7 @@ const EventList = ({ events }) => {
         </CTableHead>
         <CTableBody>
           {currentEvents.map((event, index) => (
-            <CTableRow key={index}>
+            <CTableRow key={index}     onClick={() => handleDateClickList(event)}>
               <CTableDataCell>
                 <div
                   className="rounded-circle shadow-1-strong me-3 d-flex justify-content-center align-items-center"
@@ -224,24 +231,24 @@ function Program({ program, activities }) {
                   Add Activity
                 </CButton>
               </div>
-              <EventList events={activities} />
+              <EventList events={activities} navigate={navigate} program={program} />
             </CCardBody>
           </CCard>
         </CCol>
       </CRow>
       <CRow>
         <CCol>
-          <CCard>
-            <CCardHeader style={{ textAlign: 'center' }} className="bg-dark text-light">
+          <CCard style={{ display:"flex" , justifyContent:"space-between"}}>
+            <CCardHeader style={{ textAlign: 'center', fontSize:"120%" }} className="bg-dark text-light">
               Program Information
             </CCardHeader>
-            <CCardBody style={{ padding: '50px 0px' }}>
+            <CCardBody style={{ paddingTop :"2%" , marginLeft:"6%"}}>
               <CTable responsive="sm">
                 <CTableBody>
                   {programInfo.map((detail, index) => (
                     <CTableRow key={index}>
                       <CTableHeaderCell style={{ display: 'flex', alignItems: 'center' }}>
-                        {detail.icon}
+                        <div style={{paddingRight :"8%"}}> {detail.icon} </div>
                         {detail.name}:
                       </CTableHeaderCell>
                       <CTableDataCell>{detail.value}</CTableDataCell>
