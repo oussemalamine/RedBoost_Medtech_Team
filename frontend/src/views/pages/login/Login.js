@@ -4,7 +4,6 @@ import {
   CButton,
   CCard,
   CCardBody,
-  CCardGroup,
   CCol,
   CContainer,
   CForm,
@@ -26,6 +25,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useDebouncedCallback } from 'use-debounce'
 import { setUserData } from '../../../app/features/userData/userData'
 import { setAuthentication } from '../../../app/features/auth/authSlice'
+ import logo from '../../../components/Images/logo.png'
+
 const Login = () => {
   const [visible, setVisible] = useState(false)
   const [error, setError] = useState('')
@@ -34,6 +35,7 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false)
   const isLogged = useSelector((state) => state.auth.isLogged)
   console.log('is logged login', isLogged)
+
   const { values, handleChange, handleSubmit, touched, errors } = useFormik({
     initialValues: {
       email: '',
@@ -59,126 +61,116 @@ const Login = () => {
         })
     },
   })
+
   const handleStore = useDebouncedCallback((key, value) => {
     dispatch(handleLogin({ key, value }))
   }, 250)
+
   useEffect(() => {
     if (isLogged) {
       navigate('/dash')
     }
   }, [isLogged, navigate])
+
   return (
     <div
       className="min-vh-100 d-flex flex-row align-items-center"
-      style={{ backgroundColor: '#044c54' }}
+      style={{ backgroundColor: '#F2F3F7' }}
     >
       {visible && <ForgetPass setVisible={setVisible} visible={visible} />}
       <CContainer>
         <CRow className="justify-content-center">
           <CCol md={8}>
-            <CCardGroup>
-              <CCard className="p-4">
-                <CCardBody>
-                  <CForm onSubmit={handleSubmit}>
-                    <h1>Login</h1>
-                    {error.length > 0 ? <CAlert color="danger">{error}</CAlert> : null}
-                    <p className="text-body-secondary">Sign In to your account</p>
-                    <CInputGroup className="mb-3">
-                      <CInputGroupText>
-                        <CIcon icon={cibMailRu} />
-                      </CInputGroupText>
-                      <CFormInput
-                        name="email"
-                        value={values.email}
-                        onChange={(e) => {
-                          handleChange(e)
-                          handleStore('email', e.target.value)
-                        }}
-                        placeholder="Email"
-                        autoComplete="email"
-                      />
-                      {errors.email && touched.email && (
-                        <CTooltip content={errors.email} placement="top">
-                          <CInputGroupText>
-                            <CIcon style={{ color: 'red' }} icon={cilWarning} />
-                          </CInputGroupText>
-                        </CTooltip>
-                      )}
-                    </CInputGroup>
-                    <CInputGroup className="mb-4">
-                      <CInputGroupText>
-                        <CIcon icon={cilLockLocked} />
-                      </CInputGroupText>
-                      <CFormInput
-                        name="password"
-                        value={values.password}
-                        onChange={(e) => {
-                          handleChange(e)
-                          handleStore('password', e.target.value)
-                        }}
-                        type={showPassword ? 'text' : 'password'}
-                        placeholder="Password"
-                        autoComplete="current-password"
-                      />
-                      <CInputGroupText onClick={() => setShowPassword(!showPassword)}>
-                        {showPassword ? <FaEye /> : <FaEyeSlash />}
-                      </CInputGroupText>
-                      {errors.password && touched.password && (
-                        <CTooltip content={errors.password} placement="top">
-                          <CInputGroupText>
-                            <CIcon style={{ color: 'red' }} icon={cilWarning} />
-                          </CInputGroupText>
-                        </CTooltip>
-                      )}
-                    </CInputGroup>
-                    <CRow>
-                      <CCol xs={6}>
-                        <CButton
-                          type="submit"
-                          style={{ backgroundColor: '#044c54', color: 'white' }}
-                          className="px-4"
-                        >
-                          Login
-                        </CButton>
-                      </CCol>
-                      <CCol xs={6} className="text-right">
-                        <CButton
-                          onClick={() => navigate('/password-reset')}
-                          color="link"
-                          className="px-0"
-                        >
-                          Forgot password?
-                        </CButton>
-                      </CCol>
-                    </CRow>
-                  </CForm>
-                </CCardBody>
-              </CCard>
-              <CCard
-                style={{ backgroundColor: '#cc2c44', width: '44%' }}
-                className="text-white py-5"
-              >
-                <CCardBody className="text-center">
-                  <div>
-                    <h2>Sign up</h2>
-                    <p>
-                      Join us today to unlock exciting features and personalized experiences!
-                      Register now to start exploring.
-                    </p>
-                    <Link to="/register">
+
+          
+
+          <CCard className="p-4" style={{ maxWidth: '620px', margin: 'auto' }}>
+              <CCardBody>
+              <div className="text-right mb-4">
+              <img src={logo} 
+              alt="Logo" 
+              style={{
+              width: '140px', 
+              position: 'absolute',
+              top: '30px',
+              right: '50px', 
+            }} />
+            </div>
+                <CForm onSubmit={handleSubmit}>
+                  <h1>Login</h1>
+                  {error.length > 0 ? <CAlert color="danger">{error}</CAlert> : null}
+                  <p className="text-body-secondary">Sign In to your account</p>
+                  <CInputGroup className="mb-3">
+                    <CInputGroupText>
+                      <CIcon icon={cibMailRu} />
+                    </CInputGroupText>
+                    <CFormInput
+                      name="email"
+                      value={values.email}
+                      onChange={(e) => {
+                        handleChange(e)
+                        handleStore('email', e.target.value)
+                      }}
+                      placeholder="Email"
+                      autoComplete="email"
+                    />
+                    {errors.email && touched.email && (
+                      <CTooltip content={errors.email} placement="top">
+                        <CInputGroupText>
+                          <CIcon style={{ color: 'red' }} icon={cilWarning} />
+                        </CInputGroupText>
+                      </CTooltip>
+                    )}
+                  </CInputGroup>
+                  <CInputGroup className="mb-4">
+                    <CInputGroupText>
+                      <CIcon icon={cilLockLocked} />
+                    </CInputGroupText>
+                    <CFormInput
+                      name="password"
+                      value={values.password}
+                      onChange={(e) => {
+                        handleChange(e)
+                        handleStore('password', e.target.value)
+                      }}
+                      type={showPassword ? 'text' : 'password'}
+                      placeholder="Password"
+                      autoComplete="current-password"
+                    />
+                    <CInputGroupText onClick={() => setShowPassword(!showPassword)}>
+                      {showPassword ? <FaEye /> : <FaEyeSlash />}
+                    </CInputGroupText>
+                    {errors.password && touched.password && (
+                      <CTooltip content={errors.password} placement="top">
+                        <CInputGroupText>
+                          <CIcon style={{ color: 'red' }} icon={cilWarning} />
+                        </CInputGroupText>
+                      </CTooltip>
+                    )}
+                  </CInputGroup>
+                  <CRow>
+                    <CCol xs={6}>
                       <CButton
+                        type="submit"
                         style={{ backgroundColor: '#044c54', color: 'white' }}
-                        className="mt-3"
-                        active
-                        tabIndex={-1}
+                        className="px-4"
                       >
-                        Register Now!
+                        Login
                       </CButton>
-                    </Link>
-                  </div>
-                </CCardBody>
-              </CCard>
-            </CCardGroup>
+                    </CCol>
+                    <CCol xs={6} className="text-right">
+                      <CButton
+                        onClick={() => navigate('/password-reset')}
+                        color="link"
+                        className="px-0"
+                      >
+                        Forgot password?
+                      </CButton>
+                    </CCol>
+                  </CRow>
+                </CForm>
+              </CCardBody>
+            </CCard>
           </CCol>
         </CRow>
       </CContainer>

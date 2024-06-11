@@ -23,6 +23,10 @@ const programSchema = new mongoose.Schema(
       type: Date,
       required: true,
     },
+    programId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Program", // Reference to the Program model
+    },
     budget: {
       type: Number,
       required: true,
@@ -30,6 +34,8 @@ const programSchema = new mongoose.Schema(
     authorizedUsers: [],
     activities: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Activity' }], // Reference to the Activity model
   },
+
+  
   {
     timestamps: true, // Enable timestamps
   },
