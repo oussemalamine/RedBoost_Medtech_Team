@@ -57,6 +57,7 @@ const TaskValidation = () => {
       dispatch(setUserData({ ...currentUser, exp: task.xpPoints + Number(currentUser.exp) }))
     }
   }
+  
 
   const getCompletedTasks = () => {
     return filterTasks.filter((task) => task.status === 'completed').length

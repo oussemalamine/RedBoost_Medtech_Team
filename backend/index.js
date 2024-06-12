@@ -10,7 +10,7 @@ const path = require("path");
 const cloudinary = require("cloudinary").v2;
 const helmet = require("helmet");
 const mongoose = require("mongoose");
-const multer = require("multer"); // Import multer
+const multer = require("multer");
 
 // Connect to MongoDB
 const db = process.env.DATABASE_URI;
@@ -26,8 +26,9 @@ cloudinary.config({
 });
 
 // Multer setup for file uploads
-const upload = multer({ dest: "uploads/" }); // Define multer upload middleware
+const upload = multer({ dest: "uploads/" });
 
+// Import Routes
 const signupRoute = require("./routes/api/register");
 const loginRoute = require("./routes/api/login");
 const checkAuthRoute = require("./routes/api/checkAuth");
@@ -46,9 +47,10 @@ const hundleEntrepreneur = require("./routes/api/hundleEntrepreneur");
 const handleStartups = require("./routes/api/handleStartups");
 const handleTask = require("./routes/api/handleTask");
 const sessionsRoute = require("./routes/api/Sessions");
+
 require("./passport/index");
 
-// Increase payload size limit for body-parser
+// Middleware
 app.use(express.json());
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -135,7 +137,6 @@ app.use(
     directives: {
       defaultSrc: ["'self'"],
       imgSrc: ["'self'", "data:", "https://res.cloudinary.com/"],
-      // Add other directives as needed
     },
   })
 );
@@ -187,6 +188,7 @@ app.delete("/deleteTask/:taskId", handleTask);
 app.put("/updateTask/:taskId", handleTask);
 app.post("/loadTasks", handleTask);
 app.post("/loadTasksByActivityId/:activityId", handleTask);
+app.post("/tasksByUser", handleTask);  // Register the new route
 app.get("/sessions", sessionsRoute);
 
 // The "catchall" handler: for any request that doesn't match one above, send back index.html

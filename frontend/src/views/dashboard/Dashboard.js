@@ -1,17 +1,12 @@
-import React from 'react'
-import { useSelector } from 'react-redux'
-import classNames from 'classnames'
-
+import React from 'react';
+import { useSelector } from 'react-redux';
+import classNames from 'classnames';
 import {
   CAvatar,
-  CButton,
-  CButtonGroup,
   CCard,
   CCardBody,
-  CCardFooter,
   CCardHeader,
   CCol,
-  CProgress,
   CRow,
   CTable,
   CTableBody,
@@ -19,40 +14,39 @@ import {
   CTableHead,
   CTableHeaderCell,
   CTableRow,
-} from '@coreui/react'
-import CIcon from '@coreui/icons-react'
-import { cilPeople } from '@coreui/icons'
+} from '@coreui/react';
+import CIcon from '@coreui/icons-react';
+import { cilPeople } from '@coreui/icons';
+import WidgetsDropdown from '../widgets/WidgetsDropdown';
+import userAvatar from '../../components/Images/user.png';
 
-import WidgetsBrand from '../widgets/WidgetsBrand'
-import WidgetsDropdown from '../widgets/WidgetsDropdown'
-import MainChart from './MainChart'
-import userAvatar from '../../components/Images/user.png'
+import './Dashboard.css'; 
+import TaskCalendar from './TaskCalendar'
+import TaskList from './TaskList';
 
 const Dashboard = () => {
-  const users = useSelector((state) => state.usersSlice.users)
-  console.log('users : ', users)
+  const users = useSelector((state) => state.usersSlice.users);
+  console.log('users : ', users);
 
   return (
     <>
       {/* Top Cards */}
       <WidgetsDropdown users={users} className="mb-4" />
-      
+
       {/* Online Users Section */}
       <CRow>
-        <CCol xs>
+        <CCol xs={6}>
           <CCard className="mb-4">
             <CCardHeader>Online Users</CCardHeader>
             <CCardBody>
-              <CTable align="middle" className="mb-0 border" hover responsive>
+              <CTable align="middle" className="mb-0 border table-sm" hover responsive>
                 <CTableHead className="text-nowrap">
                   <CTableRow>
                     <CTableHeaderCell className="bg-body-tertiary text-center">
                       <CIcon icon={cilPeople} />
                     </CTableHeaderCell>
-                    <CTableHeaderCell className="bg-body-tertiary">User</CTableHeaderCell>
-                    <CTableHeaderCell className="bg-body-tertiary text-center">Birthday</CTableHeaderCell>
-                    <CTableHeaderCell className="bg-body-tertiary">Email</CTableHeaderCell>
-                    <CTableHeaderCell className="bg-body-tertiary text-center">Phone</CTableHeaderCell>
+                    <CTableHeaderCell className="bg-body-tertiary">Name</CTableHeaderCell>
+                    <CTableHeaderCell className="bg-body-tertiary text-center">Points</CTableHeaderCell>
                     <CTableHeaderCell className="bg-body-tertiary">Role</CTableHeaderCell>
                   </CTableRow>
                 </CTableHead>
@@ -68,13 +62,11 @@ const Dashboard = () => {
                       </CTableDataCell>
                       <CTableDataCell>
                         <div>{user.username}</div>
-
                       </CTableDataCell>
-                      <CTableDataCell className="text-center">{user.birthday}</CTableDataCell>
-                      <CTableDataCell>{user.email}</CTableDataCell>
-                      <CTableDataCell className="text-center">{user.phone}</CTableDataCell>
+                      {/* Display updated points */}
+                      <CTableDataCell className="text-center">{user.exp}</CTableDataCell>
+                      {/* End of displaying updated points */}
                       <CTableDataCell>
-
                         <div className="fw-semibold text-nowrap">{user.role}</div>
                       </CTableDataCell>
                     </CTableRow>
@@ -84,12 +76,25 @@ const Dashboard = () => {
             </CCardBody>
           </CCard>
         </CCol>
+        <CCol xs={6}>
+          <CCard className="mb-4">
+            <CCardHeader>Calendar</CCardHeader>
+            <CCardBody>
+              <TaskCalendar/>
+            </CCardBody>
+          </CCard>
+          <CCard className="mb-4">
+            <CCardHeader>Task List</CCardHeader>
+            <CCardBody>
+              <TaskList/>
+            </CCardBody>
+          </CCard>
+        </CCol>
       </CRow>
-      
-      {/* Main Chart */}
-      <MainChart/>
-    </>
-  )
-}
 
-export default Dashboard
+    </>
+
+  );
+};
+
+export default Dashboard;
