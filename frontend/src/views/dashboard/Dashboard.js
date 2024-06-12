@@ -22,6 +22,7 @@ import userAvatar from '../../components/Images/user.png';
 
 import './Dashboard.css'; 
 import TaskCalendar from './TaskCalendar'
+import TaskList from './TaskList';
 
 const Dashboard = () => {
   const users = useSelector((state) => state.usersSlice.users);
@@ -80,6 +81,12 @@ const Dashboard = () => {
             <CCardHeader>Calendar</CCardHeader>
             <CCardBody>
               <TaskCalendar/>
+            </CCardBody>
+          </CCard>
+          <CCard className="mb-4">
+            <CCardHeader>Task List</CCardHeader>
+            <CCardBody>
+              <TaskList/>
             </CCardBody>
           </CCard>
         </CCol>

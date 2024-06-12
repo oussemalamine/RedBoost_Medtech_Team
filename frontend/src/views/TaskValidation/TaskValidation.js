@@ -48,25 +48,15 @@ const TaskValidation = () => {
   }
 
   const handleTaskDone = (task) => {
-    const user = users.find((user) => user._id === task.taskOwner);
-  
-    console.log('Task:', task);
-    console.log('User:', user);
-  
-    dispatch(updateTask({ taskId: task._id, taskData: { ...task, status: 'valid' } }));
-    console.log('Updating task with new status: valid');
-  
-    const updatedExp = task.xpPoints + Number(user.exp);
-    console.log('Updated Experience Points:', updatedExp);
-  
-    dispatch(updateUser({ userId: task.taskOwner, userData: { exp: updatedExp } }));
-    console.log('Updating user experience points:', { userId: task.taskOwner, userData: { exp: updatedExp } });
-  
+    const user = users.find((user) => user._id === task.taskOwner)
+    dispatch(updateTask({ taskId: task._id, taskData: { ...task, status: 'valid' } }))
+    dispatch(
+      updateUser({ userId: task.taskOwner, userData: { exp: task.xpPoints + Number(user.exp) } }),
+    )
     if (task.taskOwner === currentUser._id) {
-      dispatch(setUserData({ ...currentUser, exp: updatedExp }));
-      console.log('Updating current user experience points:', { ...currentUser, exp: updatedExp });
+      dispatch(setUserData({ ...currentUser, exp: task.xpPoints + Number(currentUser.exp) }))
     }
-  };
+  }
   
 
   const getCompletedTasks = () => {

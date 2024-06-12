@@ -36,8 +36,8 @@ import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import AddActivity from './AddActivity'
 import { useNavigate } from 'react-router-dom'
-import classNames from 'classnames'
-const EventList = ({ events ,program ,navigate }) => {
+
+const EventList = ({ events, program, navigate }) => {
   const itemsPerPage = 5
   const [currentPage, setCurrentPage] = useState(1)
 
@@ -68,7 +68,6 @@ const EventList = ({ events ,program ,navigate }) => {
     // Navigate to the activity details page without reloading the entire app
     navigate(`/Dash/Monitoring/${program.programTitle}/${activity.name}`)
   }
-  
 
   return (
     <>
@@ -82,7 +81,7 @@ const EventList = ({ events ,program ,navigate }) => {
         </CTableHead>
         <CTableBody>
           {currentEvents.map((event, index) => (
-            <CTableRow key={index}     onClick={() => handleDateClickList(event)}>
+            <CTableRow key={index} onClick={() => handleDateClickList(event)}>
               <CTableDataCell>
                 <div
                   className="rounded-circle shadow-1-strong me-3 d-flex justify-content-center align-items-center"
@@ -238,17 +237,20 @@ function Program({ program, activities }) {
       </CRow>
       <CRow>
         <CCol>
-          <CCard style={{ display:"flex" , justifyContent:"space-between"}}>
-            <CCardHeader style={{ textAlign: 'center', fontSize:"120%" }} className="bg-dark text-light">
+          <CCard style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <CCardHeader
+              style={{ textAlign: 'center', fontSize: '120%' }}
+              className="bg-dark text-light"
+            >
               Program Information
             </CCardHeader>
-            <CCardBody style={{ paddingTop :"2%" , marginLeft:"6%"}}>
+            <CCardBody style={{ paddingTop: '2%', marginLeft: '6%' }}>
               <CTable responsive="sm">
                 <CTableBody>
                   {programInfo.map((detail, index) => (
                     <CTableRow key={index}>
                       <CTableHeaderCell style={{ display: 'flex', alignItems: 'center' }}>
-                        <div style={{paddingRight :"8%"}}> {detail.icon} </div>
+                        <div style={{ paddingRight: '8%' }}> {detail.icon} </div>
                         {detail.name}:
                       </CTableHeaderCell>
                       <CTableDataCell>{detail.value}</CTableDataCell>
