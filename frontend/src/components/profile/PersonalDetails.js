@@ -23,7 +23,6 @@ import {
   cilCode,
   cilInstitution,
   cilBirthdayCake,
-  cilLockLocked,
   cilCloudUpload,
   cibGmail,
   cilPhone,
@@ -31,23 +30,28 @@ import {
 } from '@coreui/icons'
 import axiosInstance from '../../axiosInstance'
 import { useSelector } from 'react-redux'
+
 const PersonalDetails = () => {
   const [isEditing, setIsEditing] = useState(false)
   const [updateLog, setUpdateLog] = useState([])
   const [editedData, setEditedData] = useState([])
   const user = useSelector((state) => state.userData.userData)
+  const [userData, setUserData] = useState({
+    email: user.email ?? '',
+    role: user.role ?? '',
+    department: user.department ?? '',
+    phone: user.phone ?? '',
+    cin: user.cin ?? '',
+    adress: user.adress ?? '',
+    matricule: user.matricule ?? '',
+    birthday: user.birthday ?? '',
+  })
+
   useEffect(() => {
     const updateUserLogs = async () => {
       try {
-        const updatedLogs = [
-          ...user.logs, // Existing logs
-          ...updateLog, // New logs to append
-        ]
-
-        const response = await axiosInstance.put(`/users/${user._id}`, {
-          logs: updatedLogs,
-        })
-
+        const updatedLogs = [...user.logs, ...updateLog]
+        const response = await axiosInstance.put(`/users/${user._id}`, { logs: updatedLogs })
         if (response.data) {
           console.log('Logs Updated')
           setUpdateLog([])
@@ -63,16 +67,13 @@ const PersonalDetails = () => {
     }
   }, [updateLog, user])
 
-  // Function to handle edit mode toggle
   const toggleEditMode = () => {
     setIsEditing(!isEditing)
   }
+
   const handleConfirm = async () => {
     try {
-      const updatedData = {}
-      editedData.forEach((field) => {
-        updatedData[field] = user[field]
-      })
+      const updatedData = { ...userData }
       if (updateLog.length > 0) {
         updatedData.logs = [...user.logs, ...updateLog]
       }
@@ -80,7 +81,6 @@ const PersonalDetails = () => {
       if (response.status === 200) {
         console.log('User updated successfully:', response.data)
         if (editedData.length > 0) {
-          // Check if editedData is not empty
           editedData.forEach((element) => {
             const currentDate = new Date().toLocaleDateString()
             setUpdateLog((prevUpdateLog) => {
@@ -100,7 +100,7 @@ const PersonalDetails = () => {
             })
           })
         }
-        setEditedData(null)
+        setEditedData([])
       } else {
         console.error('Failed to update user:', response.statusText)
       }
@@ -109,29 +109,26 @@ const PersonalDetails = () => {
     }
     setIsEditing(false)
   }
+
   const handleChange = (e) => {
     const { name, value } = e.target
-    setUser((prevUser) => ({
+    setUserData((prevUser) => ({
       ...prevUser,
       [name]: value,
     }))
     setEditedData((prev) => {
-      if (prev === null) return [name]
-      const index = prev.indexOf(name)
-      if (index !== -1) {
-        // If name exists, update it
-        const updatedData = [...prev]
-        updatedData[index] = name
-        return updatedData
+      if (prev.includes(name)) {
+        return prev
       } else {
-        // If name doesn't exist, add it
         return [...prev, name]
       }
     })
   }
 
-  // Render the personal details in edit mode
   const renderEditableDetails = () => {
+    const isSuperAdmin = user.role === 'superadmin'
+    const editableFields = ['cin', 'adress', 'matricule', 'birthday']
+
     return (
       <CForm>
         {personalDetails.map((detail, index) => (
@@ -143,8 +140,9 @@ const PersonalDetails = () => {
               type="text"
               id={`input-${index}`}
               name={detail.name}
-              value={detail.value}
+              value={userData[detail.name]}
               onChange={handleChange}
+              disabled={!editableFields.includes(detail.name) && !isSuperAdmin}
             />
           </CInputGroup>
         ))}
@@ -160,21 +158,20 @@ const PersonalDetails = () => {
     )
   }
 
-  // Mock data until you fix data from the database
   const personalDetails = [
-    { name: 'email', icon: cibGmail, label: 'Email', value: user.email },
-    { name: 'role', icon: cilCode, label: 'Role', value: user.role },
-    { name: 'department', icon: cilInstitution, label: 'Department', value: user.department },
-    { name: 'phone', icon: cilPhone, label: 'Phone', value: user.phone },
-    { name: 'cin', icon: cibOrcid, label: 'N°CIN', value: user.cin===undefined? user.cin : 'Not Available' },
-    { name: 'adress', icon: cilContact, label: 'Address', value: user.adress===undefined? user.adress : 'Not Available' },
+    { name: 'email', icon: cibGmail, label: 'Email', value: userData.email },
+    { name: 'role', icon: cilCode, label: 'Role', value: userData.role },
+    { name: 'department', icon: cilInstitution, label: 'Department', value: userData.department },
+    { name: 'phone', icon: cilPhone, label: 'Phone', value: userData.phone },
+    { name: 'cin', icon: cibOrcid, label: 'N°CIN', value: userData.cin },
+    { name: 'adress', icon: cilContact, label: 'Address', value: userData.adress },
     {
       name: 'matricule',
       icon: cilSpreadsheet,
       label: 'Matricule fiscale',
-      value: user.matricule===undefined? user.matricule : 'Not Available',
+      value: userData.matricule,
     },
-    { name: 'birthday', icon: cilBirthdayCake, label: 'Birthday', value: user.birthday===undefined? user.birthday : 'Not Available' },
+    { name: 'birthday', icon: cilBirthdayCake, label: 'Birthday', value: userData.birthday },
   ]
 
   return (
