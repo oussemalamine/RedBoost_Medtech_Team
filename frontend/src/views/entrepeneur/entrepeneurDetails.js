@@ -1,94 +1,113 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import moment from 'moment'; // For handling date and time
-import { CTable, CButton, CCard, CCardBody, CCardHeader ,CAvatar, CCardTitle ,CRow ,CCol} from '@coreui/react';
+import moment from 'moment';
+import {
+  CCard, CCardBody, CCardHeader, CRow, CCol, CButton, CSpinner, CAlert, CAvatar
+} from '@coreui/react';
+import InfoCard from './InfoCard';
 
-const entrepeneurDetails = () => {
-  const { id } = useParams(); // Get the entrepreneur ID from the URL
+const EntrepreneurDetails = () => {
+  const { id } = useParams();
   const dispatch = useDispatch();
-  const allEntrepreneurs = useSelector((state) => state.entrepreneurs.entrepreneurs);
   const loading = useSelector((state) => state.entrepreneurs.loading);
-  const entrepreneur = useSelector(state => state.entrepreneurs.entrepreneurs.find(entrepreneur => entrepreneur._id === id));
-
- 
+  const entrepreneur = useSelector(state => state.entrepreneurs.entrepreneurs.find(ent => ent._id === id));
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="d-flex justify-content-center align-items-center min-vh-100">
+        <CSpinner color="primary" size="lg" />
+      </div>
+    );
   }
 
   if (!entrepreneur) {
-    return <div>Entrepreneur not found</div>;
+    return (
+      <div className="d-flex justify-content-center align-items-center min-vh-100">
+        <CAlert color="danger">Entrepreneur not found</CAlert>
+      </div>
+    );
   }
 
-  // Calculate how long the entrepreneur has been here
   const memberSince = moment(entrepreneur.joinedDate).fromNow();
 
   return (
-    <div>
+    <div className="container mt-4">
+      <div className="text-start m-2">
+        <CButton color="primary" onClick={() => window.history.back()}>Back</CButton>
+      </div>
       {/* Full-width card with avatar and name */}
-      <CCard className="mb-4">
-  <CCardBody className="d-flex align-items-center">
-   
-    <img src="https://images.pexels.com/photos/428339/pexels-photo-428339.jpeg" alt="Example Profile" width="200" height="200" />
+      <CCard 
+       textColor="secondary"
+      className="mb-4 shadow-sm mb-3 border-top-secondary border-top-3"
+     >
+        <CCardBody 
+        className="d-flex flex-column flex-md-row align-items-center">
+          <CRow>
+            <CCol md={3} className="mb-3 mb-md-0 px-md-3">
+              <div className="text-center">
+                <CAvatar
+                  src="https://randomuser.me/api/portraits/women/3.jpg"
+                  size="xxl"
+                  className="rounded-circle shadow-lg border border-primary img-fluid w-100 h-100"
+                />
+              </div>
+            </CCol>
+            
+            <CCol md={6} className="text-center text-md-start px-md-3">
+              <div className="text-center text-md-start ms-md-4 m-4">
+                <div className="name-container mb-2 m">
+                  <h4>{entrepreneur.nom.charAt(0).toUpperCase() + entrepreneur.nom.slice(1)} {entrepreneur.prenom.charAt(0).toUpperCase() + entrepreneur.prenom.slice(1)}</h4>
+                </div>
+                <p className="text-muted mt-4 ">Role: {entrepreneur.role}</p>
+                <p className="text-muted mb-0"><strong>Bio:</strong> <br/> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed fermentum, odio nec pharetra fermentum, nulla tellus sollicitudin risus, nec pretium nunc ipsum et nisi.</p>
+              </div>
+            </CCol>
 
-    <div>
-      <h5 className="fw-bold">{entrepreneur.nom} {entrepreneur.prenom}</h5>
-      <div className="text-muted">Member since {memberSince}</div>
-    </div>
-  </CCardBody>
-</CCard>
-
+            <CCol md={3} className="text-center text-md-start px-md-3 mt-5 ">
+              <p className="text-muted mt-mb-2 ">Member since {memberSince}</p>
+              <p className="text-muted mt-mb-2">XP Points: {entrepreneur.xpPoints}</p>
+            </CCol>
+          </CRow>
+        </CCardBody>
+      </CCard>
 
       {/* Two cards side by side */}
       <CRow>
-        {/* Personal Information Card */}
-        <CCol md={6}>
-          <CCard className="mb-4">
-            <CCardHeader className="bg-dark text-light">Personal Information</CCardHeader>
-            <CCardBody>
-              <div className="mb-3"><strong>Address:</strong> {entrepreneur.adresse}</div>
-              <div className="mb-3"><strong>Email:</strong> {entrepreneur.email}</div>
-              <div className="mb-3"><strong>Region:</strong> {entrepreneur.region}</div>
-              <div className="mb-3"><strong>Gouvernorat:</strong> {entrepreneur.gouvernorat}</div>
-              <div className="mb-3"><strong>Age:</strong> {entrepreneur.age}</div>
-              <div className="mb-3"><strong>Gender:</strong> {entrepreneur.gender}</div>
-              <div className="mb-3"><strong>Date of Birth:</strong> {moment(entrepreneur.dateDeNaissance).format('MMMM Do, YYYY')}</div>
-            </CCardBody>
-          </CCard>
+        <CCol xs={12} md={6}>
+          <InfoCard
+            title="Personal Information"
+            info={[
+              { label: 'Address', value: entrepreneur.adresse },
+              { label: 'Email', value: entrepreneur.email },
+              { label: 'Region', value: entrepreneur.region },
+              { label: 'Gouvernorat', value: entrepreneur.gouvernorat },
+              { label: 'Gender', value: entrepreneur.gender },
+              { label: 'Date of Birth', value: moment(entrepreneur.dateDeNaissance).format('MMMM Do, YYYY') },
+            ]}
+          />
         </CCol>
 
-        {/* Startup Information Card */}
-        <CCol md={6}>
-          <CCard className="mb-4">
-            <CCardHeader className="bg-dark text-light">Startup Information</CCardHeader>
-            <CCardBody>
-              <div className="mb-3"><strong>Startup Name:</strong> {entrepreneur.startupName}</div>
-              <div className="mb-3"><strong>Description:</strong> {entrepreneur.description}</div>
-              <div className="mb-3"><strong>Activities Sector:</strong> {entrepreneur.secteurActivites}</div>
-              <div className="mb-3"><strong>Number of Co-founders:</strong> {entrepreneur.nombreCofondateurs}</div>
-              <div className="mb-3"><strong>Number of Female Co-founders:</strong> {entrepreneur.nombreCofondateursFemmes}</div>
-              <div className="mb-3"><strong>Created or Not:</strong> {entrepreneur.creeeOuNon}</div>
-              <div className="mb-3"><strong>Legal Form:</strong> {entrepreneur.formeJuridique}</div>
-              <div className="mb-3"><strong>Number of Jobs Created:</strong> {entrepreneur.nombreEmploisCrees}</div>
-              <div className="mb-3"><strong>Project Cost:</strong> {entrepreneur.coutProjet}</div>
-              <div className="mb-3"><strong>Hours of Collective Training:</strong> {entrepreneur.nombreHeuresFormationCollective}</div>
-              <div className="mb-3"><strong>Hours of Individual Training:</strong> {entrepreneur.nombreHeuresFormationIndividuelle}</div>
-              <div className="mb-3"><strong>Funding Objectives:</strong> {entrepreneur.objectifsFinancement}</div>
-              <div className="mb-3"><strong>Project Progress State:</strong> {entrepreneur.etatAvancementProjets}</div>
-              <div className="mb-3"><strong>Other Funding:</strong> {entrepreneur.autreFinancement}</div>
-              <div className="mb-3"><strong>Funding Organization:</strong> {entrepreneur.organismeFinancement}</div>
-              <div className="mb-3"><strong>Disbursed Funding:</strong> {entrepreneur.financementDecaisse}</div>
-              <div className="mb-3"><strong>Disbursement Date:</strong> {moment(entrepreneur.dateDecaissement).format('MMMM Do, YYYY')}</div>
-              <div className="mb-3"><strong>Granted Funding Amount:</strong> {entrepreneur.montantFinancementAccorde}</div>
-            </CCardBody>
-          </CCard>
+        <CCol xs={12} md={6}>
+          <InfoCard
+            title="Startup Information"
+            info={[
+              { label: 'Startup Name', value: entrepreneur.startupName },
+              { label: 'Description', value: entrepreneur.description },
+              { label: 'Activities Sector', value: entrepreneur.secteurActivites },
+              { label: 'Number of Co-founders', value: entrepreneur.nombreCofondateurs },
+              { label: 'Number of Female Co-founders', value: entrepreneur.nombreCofondateursFemmes },
+              { label: 'Created or Not', value: entrepreneur.creeeOuNon },
+              { label: 'Legal Form', value: entrepreneur.formeJuridique },
+              { label: 'Number of Jobs Created', value: entrepreneur.nombreEmploisCrees },
+              { label: 'Project Cost', value: entrepreneur.coutProjet },
+              { label: 'Disbursement Date', value: moment(entrepreneur.dateDecaissement).format('MMMM Do, YYYY') },
+            ]}
+          />
         </CCol>
       </CRow>
-
-      <CButton color="primary" onClick={() => window.history.back()}>Back</CButton>
     </div>
   );
 };
 
-export default entrepeneurDetails;
+export default EntrepreneurDetails;

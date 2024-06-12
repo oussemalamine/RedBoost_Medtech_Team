@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
-import { CContainer, CCard, CCardBody, CCardHeader, CCol, CFormInput, CRow, CButton, CTable, CTableHead, CTableBody, CTableHeaderCell, CTableDataCell } from '@coreui/react';
+import { CContainer, CCard, CCardBody, CCardHeader, CCol, CFormInput, CRow, CButton, CTable, CTableHead, CTableBody, CTableHeaderCell, CTableDataCell, CTableRow } from '@coreui/react';
 import { FcContacts } from "react-icons/fc";
 import AdvancedFilter from './AdvancedFilter';
 
@@ -71,7 +71,7 @@ const AllContacts = () => {
             </CTableHead>
             <CTableBody>
               {filteredContacts.map(contact => (
-                <tr key={contact.id}>
+                <CTableRow key={contact.id}>
                   <CTableDataCell>{contact.name}</CTableDataCell>
                   <CTableDataCell>{contact.lastName}</CTableDataCell>
                   <CTableDataCell>{contact.phoneNumber}</CTableDataCell>
@@ -83,7 +83,7 @@ const AllContacts = () => {
                       <CButton color="primary">View Profile</CButton>
                     </Link>
                   </CTableDataCell>
-                </tr>
+                </CTableRow>
               ))}
             </CTableBody>
           </CTable>
