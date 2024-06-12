@@ -67,7 +67,19 @@ const TaskList = () => {
       <CRow>
         {tasks.map((task, index) => (
           <CCol xs="12" sm="6" md="4" key={index} className="mb-4">
-            <CCard>
+            <CCard
+              className="task-card"
+              style={{
+                transition: 'all 0.3s ease',
+                boxShadow: '0 0 5px rgba(0, 0, 0, 0.1)', // Add box shadow for hover effect
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'scale(1.05)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'scale(1)';
+              }}
+            >
               <CCardHeader>
                 {task.taskName}
                 <CBadge color={task.color} className="float-right">
