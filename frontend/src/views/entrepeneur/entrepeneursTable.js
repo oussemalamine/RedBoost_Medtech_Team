@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { CTable, CButton, CCard, CCardBody, CCardHeader } from '@coreui/react';
+import { CTable, CButton, CCard, CCardBody, CCardHeader, CContainer } from '@coreui/react';
 import { Link } from 'react-router-dom';
 import AdvancedFilter from '../contacts/AdvancedFilter.js'
+import {ImportExport} from '../ImportExportEntrepeneur/importExport.js'
 
 const EntrepreneursTable = () => {
   const allEntrepreneurs = useSelector((state) => state.entrepreneurs.entrepreneurs);
@@ -43,11 +44,14 @@ const EntrepreneursTable = () => {
     setFilteredEntrepreneurs(filtered);
   };
 
+
+
   return (
     <div>
+      
       <AdvancedFilter entrepreneurs={allEntrepreneurs} onFilterUpdate={handleFilterUpdate} />
-
-      <CCard className=' mt-5'>
+      <ImportExport/>
+      <CCard className=' mt-2'>
         <CCardHeader className="bg-dark text-light">Entrepreneurs</CCardHeader>
         <CCardBody>
           
