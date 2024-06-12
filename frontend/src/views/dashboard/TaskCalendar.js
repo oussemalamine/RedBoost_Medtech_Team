@@ -9,7 +9,6 @@ const TaskCalendar = () => {
   const [events, setEvents] = useState([]);
 
   
-
   useEffect(() => {
     // Fetch tasks for the logged-in user
     axiosInstance.post('/tasksByUser', { userId: currentUser._id })
