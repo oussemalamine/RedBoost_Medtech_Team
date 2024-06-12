@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react';
 import {
   CCard,
   CCardBody,
@@ -15,8 +15,8 @@ import {
   CContainer,
   CRow,
   CCol,
-} from '@coreui/react'
-import CIcon from '@coreui/icons-react'
+} from '@coreui/react';
+import CIcon from '@coreui/icons-react';
 import {
   cilContact,
   cilSpreadsheet,
@@ -27,15 +27,15 @@ import {
   cibGmail,
   cilPhone,
   cibOrcid,
-} from '@coreui/icons'
-import axiosInstance from '../../axiosInstance'
-import { useSelector } from 'react-redux'
+} from '@coreui/icons';
+import axiosInstance from '../../axiosInstance';
+import { useSelector } from 'react-redux';
 
 const PersonalDetails = () => {
-  const [isEditing, setIsEditing] = useState(false)
-  const [updateLog, setUpdateLog] = useState([])
-  const [editedData, setEditedData] = useState([])
-  const user = useSelector((state) => state.userData.userData)
+  const [isEditing, setIsEditing] = useState(false);
+  const [updateLog, setUpdateLog] = useState([]);
+  const [editedData, setEditedData] = useState([]);
+  const user = useSelector((state) => state.userData.userData);
   const [userData, setUserData] = useState({
     email: user.email ?? '',
     role: user.role ?? '',
@@ -45,89 +45,88 @@ const PersonalDetails = () => {
     adress: user.adress ?? '',
     matricule: user.matricule ?? '',
     birthday: user.birthday ?? '',
-  })
+  });
 
   useEffect(() => {
     const updateUserLogs = async () => {
       try {
-        const updatedLogs = [...user.logs, ...updateLog]
-        const response = await axiosInstance.put(`/users/${user._id}`, { logs: updatedLogs })
+        const updatedLogs = [...user.logs, ...updateLog];
+        const response = await axiosInstance.put(`/users/${user._id}`, { logs: updatedLogs });
         if (response.data) {
-          console.log('Logs Updated')
-          setUpdateLog([])
+          console.log('Logs Updated');
+          setUpdateLog([]);
         } else {
-          console.log('Error in updating Logs')
+          console.log('Error in updating Logs');
         }
       } catch (error) {
-        console.error('Error updating Logs:', error)
+        console.error('Error updating Logs:', error);
       }
-    }
+    };
     if (updateLog.length > 0) {
-      updateUserLogs()
+      updateUserLogs();
     }
-  }, [updateLog, user])
+  }, [updateLog, user]);
 
   const toggleEditMode = () => {
-    setIsEditing(!isEditing)
-  }
+    setIsEditing(!isEditing);
+  };
 
   const handleConfirm = async () => {
     try {
-      const updatedData = { ...userData }
+      const updatedData = { ...userData };
       if (updateLog.length > 0) {
-        updatedData.logs = [...user.logs, ...updateLog]
+        updatedData.logs = [...user.logs, ...updateLog];
       }
-      const response = await axiosInstance.put(`/users/${user._id}`, updatedData)
+      const response = await axiosInstance.put(`/users/${user._id}`, updatedData);
       if (response.status === 200) {
-        console.log('User updated successfully:', response.data)
+        console.log('User updated successfully:', response.data);
         if (editedData.length > 0) {
           editedData.forEach((element) => {
-            const currentDate = new Date().toLocaleDateString()
+            const currentDate = new Date().toLocaleDateString();
             setUpdateLog((prevUpdateLog) => {
-              const updatedLogs = [...prevUpdateLog]
-              const existingLogIndex = updatedLogs.findIndex((log) => log.date === currentDate)
+              const updatedLogs = [...prevUpdateLog];
+              const existingLogIndex = updatedLogs.findIndex((log) => log.date === currentDate);
               if (existingLogIndex !== -1) {
                 updatedLogs[existingLogIndex].events.push(
-                  `User update ${element} at ${new Date().toLocaleTimeString()}`,
-                )
+                  `User update ${element} at ${new Date().toLocaleTimeString()}`
+                );
               } else {
                 updatedLogs.push({
                   date: currentDate,
                   events: [`User update ${element} at ${new Date().toLocaleTimeString()}`],
-                })
+                });
               }
-              return updatedLogs
-            })
-          })
+              return updatedLogs;
+            });
+          });
         }
-        setEditedData([])
+        setEditedData([]);
       } else {
-        console.error('Failed to update user:', response.statusText)
+        console.error('Failed to update user:', response.statusText);
       }
     } catch (error) {
-      console.error('Error updating user:', error.message)
+      console.error('Error updating user:', error.message);
     }
-    setIsEditing(false)
-  }
+    setIsEditing(false);
+  };
 
   const handleChange = (e) => {
-    const { name, value } = e.target
+    const { name, value } = e.target;
     setUserData((prevUser) => ({
       ...prevUser,
       [name]: value,
-    }))
+    }));
     setEditedData((prev) => {
       if (prev.includes(name)) {
-        return prev
+        return prev;
       } else {
-        return [...prev, name]
+        return [...prev, name];
       }
-    })
-  }
+    });
+  };
 
   const renderEditableDetails = () => {
-    const isSuperAdmin = user.role === 'superadmin'
-    const editableFields = ['cin', 'adress', 'matricule', 'birthday']
+    const isSuperAdmin = user.role === 'superAdmin';
 
     return (
       <CForm>
@@ -142,7 +141,7 @@ const PersonalDetails = () => {
               name={detail.name}
               value={userData[detail.name]}
               onChange={handleChange}
-              disabled={!editableFields.includes(detail.name) && !isSuperAdmin}
+              disabled={!isSuperAdmin && !editableFields.includes(detail.name)}
             />
           </CInputGroup>
         ))}
@@ -155,8 +154,8 @@ const PersonalDetails = () => {
           </CButton>
         </div>
       </CForm>
-    )
-  }
+    );
+  };
 
   const personalDetails = [
     { name: 'email', icon: cibGmail, label: 'Email', value: userData.email },
@@ -165,14 +164,11 @@ const PersonalDetails = () => {
     { name: 'phone', icon: cilPhone, label: 'Phone', value: userData.phone },
     { name: 'cin', icon: cibOrcid, label: 'N°CIN', value: userData.cin },
     { name: 'adress', icon: cilContact, label: 'Address', value: userData.adress },
-    {
-      name: 'matricule',
-      icon: cilSpreadsheet,
-      label: 'Matricule fiscale',
-      value: userData.matricule,
-    },
+    { name: 'matricule', icon: cilSpreadsheet, label: 'Matricule fiscale', value: userData.matricule },
     { name: 'birthday', icon: cilBirthdayCake, label: 'Birthday', value: userData.birthday },
-  ]
+  ];
+
+  const editableFields = ['cin', 'adress', 'matricule', 'birthday'];
 
   return (
     <CCard>
@@ -212,7 +208,7 @@ const PersonalDetails = () => {
         </div>
       </CCardBody>
     </CCard>
-  )
-}
+  );
+};
 
-export default PersonalDetails
+export default PersonalDetails;
