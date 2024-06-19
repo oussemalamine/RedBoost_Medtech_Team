@@ -141,8 +141,8 @@ const CreateContact = () => {
   <CCol md="6" className="mb-4">
     <fieldset className="border border-success p-4 bg-light rounded mt-4 mb-0" style={{ marginBottom: "20px" }}>
       <legend className="w-auto">Information sur l'entrepreneur</legend>
-      <div className="row">
-        <CCol md="12">
+      <CRow>
+        <CCol md="6">
           {/* Input fields for entrepreneur information */}
           <CFormLabel className="mt-2">Nom</CFormLabel>
           <CFormInput
@@ -155,6 +155,8 @@ const CreateContact = () => {
             required
             feedbackInvalid="Le nom est requis."
           />
+          </CCol>
+          <CCol md="6">
           <CFormLabel className="mt-2">Prénom</CFormLabel>
           <CFormInput
             type="text"
@@ -166,6 +168,8 @@ const CreateContact = () => {
             required
             feedbackInvalid="Le prénom est requis."
           />
+          </CCol>
+          <CCol md='12'>
           <CFormLabel className="mt-2">Adresse</CFormLabel>
           <CFormInput
             type="text"
@@ -177,6 +181,8 @@ const CreateContact = () => {
             required
             feedbackInvalid="L'adresse est requise."
           />
+          </CCol>
+          <CCol  md='12'>
           <CFormLabel className="mt-2">Email</CFormLabel>
           <CFormInput
             type="email"
@@ -188,6 +194,8 @@ const CreateContact = () => {
             required
             feedbackInvalid="L'email est requis."
           />
+          </CCol>
+          <CCol md='12'>
           <CFormLabel className="mt-2">Date de Naissance</CFormLabel>
           <CFormInput
             type="date"
@@ -199,6 +207,8 @@ const CreateContact = () => {
             required
             feedbackInvalid="La date de naissance est requise."
           />
+          </CCol>
+          <CCol md='6'>
           <CFormLabel className="mt-2">Région</CFormLabel>
           <CFormSelect
             name="region"
@@ -213,6 +223,8 @@ const CreateContact = () => {
               <option key={region} value={region}>{region}</option>
             ))}
           </CFormSelect>
+          </CCol>
+          <CCol md='6'>
           <CFormLabel className="mt-2">Gender</CFormLabel>
           <CFormSelect
             name="gender"
@@ -223,11 +235,23 @@ const CreateContact = () => {
             feedbackInvalid="Gender is required."
           >
             <option value="">Select Gender</option>
-            <option value="Male">Male</option>
-            <option value="Female">Female</option>
+            <option value="homme">Male</option>
+            <option value="femme">Female</option>
           </CFormSelect>
-        </CCol>
-      </div>
+          </CCol>
+          <CCol md='12'>
+          <CFormLabel className="mt-2">Upload Picture</CFormLabel>
+            <CFormInput type="file" accept="image/*"  name='logo'  />
+          </CCol>
+          <CCol>
+            <CFormLabel className="mt-2">Description</CFormLabel>
+            <CFormTextarea 
+            name='Description'
+            rows="1.5"
+            placeholder='description'
+            ></CFormTextarea>
+          </CCol>
+        </CRow>
     </fieldset>
   </CCol>
 
@@ -257,7 +281,7 @@ const CreateContact = () => {
 
             valid={contactData.description!==''}
             placeholder="Description"
-            rows="1"
+            rows="1.5"
             required
             feedbackInvalid="Description is required."
           />
@@ -284,7 +308,7 @@ const CreateContact = () => {
                 name="secteurActivites"
                 value={contactData.secteurActivites}
                 onChange={handleInputChange}
-                valid={contactData.secteurActivites!==''}
+                valid={contactData.secteurActivites in secteursActivites}
                 required
                 feedbackInvalid="Secteur d'activités is required."
               >
@@ -315,7 +339,7 @@ const CreateContact = () => {
                 type="number"
                 name="nombreCofondateursFemmes"
                 value={contactData.nombreCofondateursFemmes}
-                valid={contactData.nombreCofondateursFemmes>0}
+                valid={contactData.nombreCofondateursFemmes>0 && contactData.nombreCofondateurs>=contactData.nombreCofondateursFemmes}
                 onChange={handleInputChange}
                 placeholder="Nombre Cofondateurs Femmes"
                 required
@@ -335,22 +359,26 @@ const CreateContact = () => {
             feedbackInvalid="Creee ou non is required."
           >
             <option value="">Creee ou non</option>
-            <option value="Creee">Creee</option>
-            <option value="Non">Non</option>
+            <option value="oui">Creee</option>
+            <option value="non">Non</option>
           </CFormSelect>
           </CCol>
           <CCol md="6">
           <CFormLabel className="mt-2">Forme Juridique</CFormLabel>
-          <CFormInput
-            type="text"
+          <CFormSelect
             name="formeJuridique"
             value={contactData.formeJuridique}
             onChange={handleInputChange}
             valid={contactData.formeJuridique!==''}
-            placeholder="Forme Juridique"
             required
             feedbackInvalid="Forme Juridique is required."
-          />
+          >
+            <option value="">Forme juridique</option>
+            <option value="SAS">SAS</option>
+            <option value="SARL">SARL</option>
+            <option value="SAS">SAS</option>
+            <option value="SAS">SAS</option>
+          </CFormSelect>
           </CCol>
           </CRow>
           <CFormLabel className="mt-2">Nombre Emplois Crees</CFormLabel>

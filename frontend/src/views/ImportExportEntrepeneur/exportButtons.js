@@ -16,10 +16,10 @@ const ExportButtons = ({ onExportAll, onExportSelected, selectedCount }) => {
   };
 
   return (
-    <div className="d-flex justify-content-between mb-3">
+    <div>
       <div>
-        <CButton color="primary" onClick={handleExportAll}>Export All</CButton>
-        <CButton color="primary" className="ml-2" onClick={handleExportSelected}>Export Selected</CButton>
+        <CButton color="primary" className="m-2" onClick={handleExportAll}>Export All</CButton>
+        <CButton color="primary" className="m-2" onClick={handleExportSelected}>Export Selected</CButton>
       </div>
       <div>
         <p>{selectedCount} selected</p>

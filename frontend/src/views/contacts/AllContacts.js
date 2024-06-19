@@ -72,21 +72,21 @@ const AllContacts = () => {
               </tr>
             </CTableHead>
             <CTableBody>
-            {filteredContacts.map(contact => (
-  <CTableRow key={contact.id}>
-    <CTableDataCell>{contact.nom}</CTableDataCell>
-    <CTableDataCell>{contact.prenom}</CTableDataCell>
-    <CTableDataCell>{contact.adresse}</CTableDataCell>
-    <CTableDataCell>{contact.dateDeNaissance}</CTableDataCell>
-    <CTableDataCell>{contact.gender}</CTableDataCell>
-    <CTableDataCell>{contact.email}</CTableDataCell>
-    <CTableDataCell>
-      <Link to={`/profile/${contact.id}`}>
-        <CButton color="primary">View Profile</CButton>
-      </Link>
-    </CTableDataCell>
-  </CTableRow>
-))}
+              {filteredContacts.map(contact => (
+              <CTableRow key={contact.id}>
+              <CTableDataCell>{contact.nom}</CTableDataCell>
+              <CTableDataCell>{contact.prenom}</CTableDataCell>
+              <CTableDataCell>{contact.adresse}</CTableDataCell>
+              <CTableDataCell>{contact.dateDeNaissance}</CTableDataCell>
+              <CTableDataCell>{contact.gender}</CTableDataCell>
+              <CTableDataCell>{contact.email}</CTableDataCell>
+              <CTableDataCell>
+              <Link to={`/profile/${contact.id}`}>
+                <CButton color="primary">View Profile</CButton>
+              </Link>
+            </CTableDataCell>
+          </CTableRow>
+            ))}
 
             </CTableBody>
           </CTable>

@@ -99,6 +99,7 @@ const EntrepreneursTable = () => {
   };
   const handleDeleteEntrepreneur = async (id) => {
     try {
+      console.log(id)
       // Make a DELETE request using the Axios instance
       await axiosInstance.delete(`/deleteEntrepreneur/${id}`);
   
@@ -118,12 +119,13 @@ const EntrepreneursTable = () => {
   return (
     <div>
       <AdvancedFilter entrepreneurs={allEntrepreneurs} onFilterUpdate={handleFilterUpdate} />
+      <div className="d-flex justify-content-end mt-2 ">
       <ImportExport />
       <ExportButtons
         onExportAll={handleExportAll}
         onExportSelected={handleExportSelected}
         selectedCount={selectedEntrepreneurs.length}
-      />
+      /></div>
       <CCard className='mt-2'>
         <CCardHeader className="bg-dark text-light">Entrepreneurs</CCardHeader>
         <CCardBody>
@@ -131,11 +133,11 @@ const EntrepreneursTable = () => {
             {/* Table header */}
             <thead>
               <tr>
-                <th><input type="checkbox" /></th>
+                <th></th>
                 <th>Entrepreneur Name</th>
                 <th>Startup Name</th>
                 <th>Activities Sector</th>
-                <th>Tel</th>
+                <th>Birthday</th>
                 <th>Mail</th>
                 <th></th> {/* See More button */}
               </tr>
@@ -154,15 +156,19 @@ const EntrepreneursTable = () => {
                   <td>{entrepreneur.nom} {entrepreneur.prenom}</td>
                   <td>{entrepreneur.startupName}</td>
                   <td>{entrepreneur.secteurActivites}</td>
-                  <td>{entrepreneur.tel}</td>
+                  <td>
+                    {new Date(entrepreneur.dateDeNaissance).toLocaleDateString('en-US', {
+                      year: 'numeric',
+                      month: '2-digit',
+                      day: '2-digit',
+                    })}
+                  </td>
                   <td>{entrepreneur.email}</td>
                   <td>
                     <Link to={`${entrepreneur._id}`}>
                       <CButton color="primary">See More</CButton>
                       </Link>
-                    <CButton color="danger" onClick={() => handleDeleteEntrepreneur(entrepreneur._id)}>Delete</CButton>
-                  
-                    
+                    <CButton color="danger" className='m-1' onClick={() => handleDeleteEntrepreneur(entrepreneur._id)}>Delete</CButton>
                   </td>
                 </tr>
               ))}
