@@ -14,97 +14,49 @@ import {
   CButton,
   CPagination,
   CPaginationItem,
-} from '@coreui/react'
-import { HiMagnifyingGlassCircle } from 'react-icons/hi2'
-import React, { useEffect, useState } from 'react'
-import { CChart } from '@coreui/react-chartjs'
-import { FaCircle, FaCirclePlus } from 'react-icons/fa6'
-import CIcon from '@coreui/icons-react'
-import { cilCalendar } from '@coreui/icons'
-import EditTask from './EditTask'
-import TaskView from './TaskView'
-import AddTask from './AddTask'
-import TaskSlice, { createTask } from '../../app/features/task/taskSlice'
-import { useNavigate } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
-
-const TaskStatusCard = ({ status, tasks, color }) => {
-  return (
-    <CCol xs={12} md={4}>
-      <CCard className="mb-3" style={{ height: '400px' }}>
-        <CCardHeader
-          className="text-light"
-          style={{
-            backgroundColor: color,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-          }}
-        >
-          {status}
-        </CCardHeader>
-        <CCardBody style={{ overflow: 'auto' }}>
-          {tasks.map((task, index) => {
-            if (task.status === status) {
-              return (
-                <div className="container" key={index}>
-                  <div
-                    onClick={() => handleModalVisibility(task)}
-                    className="card border border-success shadow mb-3"
-                    style={{ maxWidth: '400px' }}
-                  >
-                    <div className="card-header">
-                      <strong>{task.taskName}</strong>
-                    </div>
-                    <div className="card-body">
-                      <div className="d-flex justify-content-between align-items-center mt-3">
-                        <div className="text-muted">
-                          <CIcon icon={cilCalendar} className="mr-1" />
-                          {new Date(task.endDate).toLocaleDateString()}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )
-            }
-          })}
-        </CCardBody>
-      </CCard>
-    </CCol>
-  )
-}
+} from '@coreui/react';
+import { HiMagnifyingGlassCircle } from 'react-icons/hi2';
+import React, { useState } from 'react';
+import { CChart } from '@coreui/react-chartjs';
+import CIcon from '@coreui/icons-react';
+import { cilCalendar, cilUser } from '@coreui/icons';
+import EditTask from './EditTask';
+import TaskView from './TaskView';
+import AddTask from './AddTask';
+import { createTask } from '../../app/features/task/taskSlice';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 
 function Activity({ activity, tasks }) {
-  const navigate = useNavigate()
-  const [visible, setVisible] = useState(false)
-  const [open, setOpen] = useState(false)
-  const [selectedTask, setSelectedtask] = useState(null)
-  const [addModalVisible, setAddModalVisible] = useState(false)
-  const itemsPerPage = 4
-  const [currentPage, setCurrentPage] = useState(1)
+  const navigate = useNavigate();
+  const [visible, setVisible] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [selectedTask, setSelectedtask] = useState(null);
+  const [addModalVisible, setAddModalVisible] = useState(false);
+  const itemsPerPage = 4;
+  const [currentPage, setCurrentPage] = useState(1);
 
-  const indexOfLastItem = currentPage * itemsPerPage
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage
-  const currentTasks = tasks.slice(indexOfFirstItem, indexOfLastItem)
-  const dispatch = useDispatch()
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentTasks = tasks.slice(indexOfFirstItem, indexOfLastItem);
+  const dispatch = useDispatch();
   const paginate = (pageNumber) => {
-    setCurrentPage(pageNumber)
-  }
+    setCurrentPage(pageNumber);
+  };
 
-  const totalPages = Math.ceil(tasks.length / itemsPerPage)
+  const totalPages = Math.ceil(tasks.length / itemsPerPage);
 
   const goToPreviousPage = () => {
     if (currentPage > 1) {
-      setCurrentPage(currentPage - 1)
+      setCurrentPage(currentPage - 1);
     }
-  }
+  };
 
   const goToNextPage = () => {
     if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1)
+      setCurrentPage(currentPage + 1);
     }
-  }
+  };
 
   const handleAddTask = (Data) => {
     const taskData = {
@@ -114,84 +66,80 @@ function Activity({ activity, tasks }) {
       deliverables: [],
       kpis: [],
       activityId: activity._id,
-    }
-    console.log(taskData)
-    dispatch(createTask(taskData))
-    setAddModalVisible(false)
-  }
-  const getValidTasks = () => {
-    let nb = 0
-    tasks.map((task) => {
-      if (task.status === 'valid') {
-        nb++
-      }
-    })
-    return nb
-  }
-  const getProgressTasks = () => {
-    let nb = 0
-    tasks.map((task) => {
-      if (task.status === 'inProgress') {
-        nb++
-      }
-    })
-    return nb
-  }
-  const getCompletedTasks = () => {
-    let nb = 0
-    tasks.map((task) => {
-      if (task.status === 'completed') {
-        nb++
-      }
-    })
-    return nb
-  }
-  const getNotStartedTasks = () => {
-    let nb = 0
-    tasks.map((task) => {
-      if (task.status === 'notStarted') {
-        nb++
-      }
-    })
-    return nb
-  }
-  const getCancelledTasks = () => {
-    let nb = 0
-    tasks.map((task) => {
-      if (task.status === 'cancelled') {
-        nb++
-      }
-    })
-    return nb
-  }
-  const getExpiredTasks = () => {
-    let nb = 0
-    tasks.map((task) => {
-      if (task.status === 'expired') {
-        nb++
-      }
-    })
-    return nb
-  }
+    };
+    console.log(taskData);
+    dispatch(createTask(taskData));
+    setAddModalVisible(false);
+  };
 
-  const handleModalVisibility = (task) => {
-    setSelectedtask(task)
-    setVisible(true)
-  }
+  const getValidTasks = () => tasks.filter((task) => task.status === 'valid').length;
+  const getProgressTasks = () => tasks.filter((task) => task.status === 'inProgress').length;
+  const getCompletedTasks = () => tasks.filter((task) => task.status === 'completed').length;
+  const getNotStartedTasks = () => tasks.filter((task) => task.status === 'notStarted').length;
+  const getCancelledTasks = () => tasks.filter((task) => task.status === 'cancelled').length;
+  const getExpiredTasks = () => tasks.filter((task) => task.status === 'expired').length;
+
   const handleViewTask = (task) => {
-    const currentPath = window.location.pathname
-    navigate(`${currentPath}/${task.taskName}`)
-  }
-  const formatDate = (date) => {
-    let month = '' + (date.getMonth() + 1), // getMonth() is zero-based
-      day = '' + date.getDate(),
-      year = date.getFullYear()
+    const currentPath = window.location.pathname;
+    navigate(`${currentPath}/${task.taskName}`);
+  };
 
-    if (month.length < 2) month = '0' + month
-    if (day.length < 2) day = '0' + day
-
-    return [year, month, day].join('-')
-  }
+  const TaskStatusCard = ({ status, tasks, color }) => {
+    return (
+      <CCol xs={12} md={4}>
+        <CCard className="mb-3 card" style={{ height: '400px' }}>
+          <CCardHeader
+            className="text-light"
+            style={{
+              backgroundColor: color,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            }}
+          >
+            {status}
+          </CCardHeader>
+          <CCardBody style={{ overflow: 'auto' }}>
+            {tasks.map((task, index) => {
+              if (task.status === status) {
+                return (
+                  <div className="Card_into_card" key={index}>
+                    <div
+                      onClick={() => handleViewTask(task)}
+                      className="card border border-success shadow mb-3"
+                      style={{ maxWidth: '400px', cursor: 'pointer' }}
+                    >
+                      <div className="card-header">
+                        <strong>{task.taskName}</strong>
+                      </div>
+                      <div className="card-body">
+                        <div className="text-muted mb-2">
+                          <CIcon icon={cilUser} className="mr-1" />
+                          Assigned to: {task.taskOwner}
+                        </div>
+                        <div className="text-muted mb-2">
+                          <CIcon icon={cilCalendar} className="mr-1" />
+                          Start Date: {new Date(task.startDate).toLocaleDateString()}
+                        </div>
+                        <div className="text-muted mb-2">
+                          <CIcon icon={cilCalendar} className="mr-1" />
+                          End Date: {new Date(task.endDate).toLocaleDateString()}
+                        </div>
+                        <div className="text-muted">
+                          {task.description}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              }
+              return null;
+            })}
+          </CCardBody>
+        </CCard>
+      </CCol>
+    );
+  };
 
   return (
     <>
@@ -239,6 +187,22 @@ function Activity({ activity, tasks }) {
             <CCard className="mb-3">
               <CCardHeader className="bg-dark text-light">Recent Tasks</CCardHeader>
               <CCardBody>
+                <style>
+                  {`
+                    .table-row:hover {
+                      cursor: pointer; /* Change the cursor to pointer */
+                      transform: scale(1.05); /* Slightly increase the size */
+                      transition: transform 0.8s ease; /* Smooth transition */
+                      background-color: #e0e0e0; /* Change the background color on hover */
+                      transition: background-color 0.8s ease; /* Smooth transition */
+                    }
+                    .Card_into_card:hover .card {
+                      transform: scale(1.05); /* Slightly increase the size */
+                      transition: transform 0.3s ease; /* Smooth transition */
+                    }
+                    
+                  `}
+                </style>
                 <CTable striped responsive className="text-center">
                   <CTableHead>
                     <CTableRow>
@@ -250,7 +214,11 @@ function Activity({ activity, tasks }) {
                   </CTableHead>
                   <CTableBody>
                     {currentTasks.map((task, index) => (
-                      <CTableRow key={index}>
+                      <CTableRow
+                        key={index}
+                        onClick={() => handleViewTask(task)}
+                        className="table-row rows_of_table"
+                      >
                         <CTableDataCell>
                           {new Date(task.endDate).toLocaleDateString()}
                         </CTableDataCell>
@@ -260,14 +228,17 @@ function Activity({ activity, tasks }) {
                           <HiMagnifyingGlassCircle
                             role="button"
                             style={{ fontSize: '25px', color: '#4CAF50' }}
-                            onClick={() => handleViewTask(task)}
+                            onClick={(e) => {
+                              e.stopPropagation() // Prevent the click event from bubbling up to the row
+                              handleViewTask(task)
+                            }}
                           />
                         </CTableDataCell>
                       </CTableRow>
                     ))}
                   </CTableBody>
                 </CTable>
-                <CPagination pages={totalPages} align="center">
+                <CPagination align="center">
                   <CPaginationItem
                     onClick={goToPreviousPage}
                     disabled={currentPage <= 1}
@@ -275,6 +246,15 @@ function Activity({ activity, tasks }) {
                   >
                     Previous
                   </CPaginationItem>
+                  {Array.from({ length: totalPages }, (_, index) => (
+                    <CPaginationItem
+                      key={index}
+                      active={index + 1 === currentPage}
+                      onClick={() => paginate(index + 1)}
+                    >
+                      {index + 1}
+                    </CPaginationItem>
+                  ))}
                   <CPaginationItem
                     onClick={goToNextPage}
                     disabled={currentPage >= totalPages}
@@ -305,10 +285,9 @@ function Activity({ activity, tasks }) {
                     datasets: [
                       {
                         label: 'Task Progress',
-                        backgroundColor: ['pink, lightgreen, green, yellow,grey,blue'],
+                        backgroundColor: ['pink', 'lightgreen', 'green', 'yellow', 'grey', 'blue'],
                         data: [
                           tasks.length,
-
                           getProgressTasks(),
                           getCompletedTasks(),
                           getValidTasks(),

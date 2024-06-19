@@ -4,7 +4,7 @@ import { cibBehance, cibLinkedinIn, cilPen, cilStar } from '@coreui/icons';
 import CIcon from '@coreui/icons-react';
 import './profile.css';
 import Modal from './PhotoModal';
-import EditProfileModal from './EditModal';
+import EditModal from './EditModal';
 import axiosInstance from '../../axiosInstance';
 import { useDispatch, useSelector } from 'react-redux';
 import { setUserData } from '../../app/features/userData/userData';
@@ -66,7 +66,7 @@ const UserProfileHeader = () => {
   return (
     <>
       <Modal setImage={setImage} visible={visible} setVisible={setVisible} />
-      <EditProfileModal user={user} isOpen={isOpen} setIsOpen={setIsOpen} />
+      <EditModal user={user} isOpen={isOpen} setIsOpen={setIsOpen} />
       <CCard className="text-center mb-3">
         <CCardHeader className="bg-dark text-light">Profile Header</CCardHeader>
         <CCardBody>

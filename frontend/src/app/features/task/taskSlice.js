@@ -6,6 +6,7 @@ export const loadTask = createAsyncThunk('task/loadTask', async (taskId, { rejec
     const response = await axios.post(`http://localhost:5000/loadTask/${taskId}`)
     return response.data
   } catch (error) {
+    console.error('Error loading task:', error)
     return rejectWithValue(error.response.data)
   }
 })
@@ -17,6 +18,7 @@ export const createTask = createAsyncThunk(
       const response = await axios.post(`http://localhost:5000/addTask`, taskData)
       return response.data
     } catch (error) {
+      console.error('Error creating task:', error)
       return rejectWithValue(error.response.data)
     }
   },
@@ -29,6 +31,7 @@ export const deleteTask = createAsyncThunk(
       const response = await axios.delete(`http://localhost:5000/deleteTask/${taskId}`)
       return response.data
     } catch (error) {
+      console.error('Error deleting task:', error)
       return rejectWithValue(error.response.data)
     }
   },
@@ -39,6 +42,7 @@ export const loadTasks = createAsyncThunk('task/loadTasks', async (_, { rejectWi
     const response = await axios.post(`http://localhost:5000/loadTasks`)
     return response.data
   } catch (error) {
+    console.error('Error loading tasks:', error)
     return rejectWithValue(error.response.data)
   }
 })
@@ -50,6 +54,7 @@ export const loadTasksByActivityId = createAsyncThunk(
       const response = await axios.post(`http://localhost:5000/loadTasksByActivityId/${activityId}`)
       return response.data
     } catch (error) {
+      console.error('Error loading tasks by activity ID:', error)
       return rejectWithValue(error.response.data)
     }
   },
@@ -65,25 +70,41 @@ export const updateTask = createAsyncThunk(
       console.log('Update response:', response.data)
       return response.data
     } catch (error) {
-      console.error('Error updating task:', error.response.data)
+      console.error('Error updating task:', error)
       return rejectWithValue(error.response.data)
     }
   },
 )
 
+export const fetchTasksByUser = createAsyncThunk(
+  'task/fetchTasksByUser',
+  async (userId, { rejectWithValue }) => {
+    try {
+      const response = await axios.post('http://localhost:5000/tasksByUser', { userId });
+      console.log('API Response:', response.data); // Log response data
+      return response.data.tasks; // Assuming response data has a "tasks" field
+    } catch (error) {
+      console.error('Error fetching tasks by user:', error);
+      return rejectWithValue(error.response ? error.response.data : error.message);
+    }
+  }
+);
+
 const taskSlice = createSlice({
   name: 'task',
   initialState: {
-    allTasks: [], // when loading all the tasks
+    allTasks: [],
+    tasksByUser: [],
     status: 'idle',
     error: null,
     tasksByActivityId: [],
-    task: {}, // when dealing with a single task
+    task: {},
   },
   extraReducers: (builder) => {
     builder
       .addCase(loadTasks.fulfilled, (state, action) => {
         state.allTasks = action.payload
+        state.status = 'succeeded'
       })
       .addCase(loadTasks.rejected, (state, action) => {
         state.status = 'failed'
@@ -106,10 +127,10 @@ const taskSlice = createSlice({
       })
       .addCase(deleteTask.fulfilled, (state, action) => {
         state.allTasks = state.allTasks.filter((task) => task._id !== action.payload)
-        console.log('Deleted task ID:', action.payload)
         state.tasksByActivityId = state.tasksByActivityId.filter(
           (task) => task._id !== action.payload,
         )
+        state.status = 'succeeded'
       })
       .addCase(deleteTask.rejected, (state, action) => {
         state.status = 'failed'
@@ -119,33 +140,25 @@ const taskSlice = createSlice({
         state.status = 'loading'
       })
       .addCase(updateTask.fulfilled, (state, action) => {
-        console.log('Task updated successfully:', action.payload)
         state.task = action.payload
         state.status = 'succeeded'
-        state.allTasks = state.allTasks.map((task) => {
-          if (task._id === action.payload._id) {
-            return action.payload
-          }
-          return task
-        })
-        state.tasksByActivityId = state.tasksByActivityId.map((task) => {
-          if (task._id === action.payload._id) {
-            return action.payload
-          }
-          return task
-        })
+        state.allTasks = state.allTasks.map((task) =>
+          task._id === action.payload._id ? action.payload : task,
+        )
+        state.tasksByActivityId = state.tasksByActivityId.map((task) =>
+          task._id === action.payload._id ? action.payload : task,
+        )
       })
       .addCase(updateTask.rejected, (state, action) => {
-        console.error('Task update failed:', action.error.message)
         state.status = 'failed'
         state.error = action.error.message
       })
       .addCase(updateTask.pending, (state) => {
-        console.log('Task update pending...')
         state.status = 'loading'
       })
       .addCase(loadTask.fulfilled, (state, action) => {
         state.task = action.payload
+        state.status = 'succeeded'
       })
       .addCase(loadTask.rejected, (state, action) => {
         state.status = 'failed'
@@ -156,6 +169,7 @@ const taskSlice = createSlice({
       })
       .addCase(loadTasksByActivityId.fulfilled, (state, action) => {
         state.tasksByActivityId = action.payload
+        state.status = 'succeeded'
       })
       .addCase(loadTasksByActivityId.rejected, (state, action) => {
         state.status = 'failed'
@@ -164,7 +178,20 @@ const taskSlice = createSlice({
       .addCase(loadTasksByActivityId.pending, (state) => {
         state.status = 'loading'
       })
+      .addCase(fetchTasksByUser.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(fetchTasksByUser.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        state.tasksByUser = action.payload; // Assign the payload to tasksByUser
+      })
+      .addCase(fetchTasksByUser.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.payload || action.error.message;
+      });
   },
-})
+});
+
+export const selectTasksByUser = (state) => state.task.tasksByUser
 
 export default taskSlice.reducer
