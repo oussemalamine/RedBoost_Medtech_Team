@@ -10,13 +10,13 @@ import {
   CCol,
   CBadge,
 } from '@coreui/react';
+import { Link } from 'react-router-dom'; 
 
 const TaskList = () => {
   const currentUser = useSelector((state) => state.userData.userData);
   const [tasks, setTasks] = useState([]);
 
   useEffect(() => {
-    // Fetch tasks for the logged-in user
     axiosInstance.post('/tasksByUser', { userId: currentUser._id })
       .then(response => {
         const fetchedTasks = response.data.map(task => {
@@ -41,10 +41,9 @@ const TaskList = () => {
               color = 'info';
               break;
             default:
-              color = 'dark'; // Default color for undefined statuses
+              color = 'dark';
           }
 
-          // Format the dates
           const formattedStartDate = new Date(task.startDate).toLocaleDateString();
           const formattedEndDate = new Date(task.endDate).toLocaleDateString();
 
@@ -62,11 +61,22 @@ const TaskList = () => {
       });
   }, [currentUser]);
 
+  const cardStyle = {
+    cursor: 'pointer',
+    transition: 'transform 0.2s, box-shadow 0.2s',
+  };
+
+  const cardHoverStyle = {
+    transform: 'translateY(-5px)',
+    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+  };
+
   return (
     <CContainer>
       <CRow>
         {tasks.map((task, index) => (
           <CCol xs="12" sm="6" md="4" key={index} className="mb-4">
+<<<<<<< Updated upstream
             <CCard
               className="task-card"
               style={{
@@ -92,6 +102,37 @@ const TaskList = () => {
                 <p><strong>Description:</strong> {task.description}</p>
               </CCardBody>
             </CCard>
+=======
+            <Link
+              to={`/Dash/${task._id}`}  
+              style={{ textDecoration: 'none' }}
+              onClick={() => console.log('Clicked Task ID:', task._id)} // Log the taskId
+            >
+              <CCard
+                style={cardStyle}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = cardHoverStyle.transform;
+                  e.currentTarget.style.boxShadow = cardHoverStyle.boxShadow;
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'none';
+                  e.currentTarget.style.boxShadow = 'none';
+                }}
+              >
+                <CCardHeader>
+                  {task.taskName}
+                  <CBadge color={task.color} className="float-right">
+                    {task.status}
+                  </CBadge>
+                </CCardHeader>
+                <CCardBody>
+                  <p><strong>Start Date:</strong> {task.startDate}</p>
+                  <p><strong>End Date:</strong> {task.endDate}</p>
+                  <p><strong>Description:</strong> {task.description}</p>
+                </CCardBody>
+              </CCard>
+            </Link>
+>>>>>>> Stashed changes
           </CCol>
         ))}
       </CRow>
