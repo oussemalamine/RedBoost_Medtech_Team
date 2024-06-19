@@ -13,21 +13,26 @@ import {
   CTableHead,
   CTableHeaderCell,
   CTableRow,
+  CButton,
 } from '@coreui/react';
 import CIcon from '@coreui/icons-react';
 import { cilPeople } from '@coreui/icons';
-import WidgetsDropdown from '../widgets/WidgetsDropdown';
+import UserDetails from './UserDetails';
 import userAvatar from '../../components/Images/user.png';
 import TaskCalendar from './TaskCalendar';
 import TaskList from './TaskList';
-import UserDetails from './UserDetails';
 
 const Dashboard = () => {
   const users = useSelector((state) => state.usersSlice.users);
   const [selectedUser, setSelectedUser] = useState(null);
 
   const handleUserClick = (user) => {
-    setSelectedUser(user);
+    if (user.image.length > 0) {
+      setSelectedUser(user);
+    } else {
+      alert('Please upload a photo to view user details.');
+      // You can customize this alert or UI notification as per your design requirements
+    }
   };
 
   const handleBack = () => {
@@ -40,7 +45,6 @@ const Dashboard = () => {
         <UserDetails user={selectedUser} onBack={handleBack} />
       ) : (
         <>
-          <WidgetsDropdown users={users} className="mb-4" />
           <CRow>
             <CCol xs={6}>
               <CCard className="mb-4">
