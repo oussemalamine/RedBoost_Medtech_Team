@@ -373,6 +373,9 @@ const EditButtonPop = ({ visible, setVisible, entrepreneur }) => {
                 <option value="">Sélectionnez la forme juridique</option>
                 <option value="SAS">SAS</option>
                 <option value="SARL">SARL</option>
+                <option value="SURL">SURL</option>
+                <option value="SA">SA</option>
+                <option value="SCA">SCA</option>
               </CFormSelect>
               {validationErrors.formeJuridique && <div className="invalid-feedback">{validationErrors.formeJuridique}</div>}
               <CFormLabel className="mt-2">Nombre d'Emplois Créés</CFormLabel>
