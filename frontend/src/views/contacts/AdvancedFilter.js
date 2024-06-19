@@ -11,145 +11,152 @@ import {
   CCol,
   CFormLabel,
 } from '@coreui/react';
+import { cilSearch } from '@coreui/icons';
 
 const AdvancedFilter = ({ entrepreneurs, onFilterUpdate }) => {
   const [filters, setFilters] = useState({
     sector: '',
-    gender: '',
+    male: true, // Default checked
+    female: true, // Default checked
     region: '',
-    ageMin: '',
-    ageMax: '',
     gouvernorat: '',
-    nom: '',
-    prenom: '',
-    // ... add other filters as needed
+    search: ''
   });
 
   const [sectors, setSectors] = useState([]);
   const [regions, setRegions] = useState([]);
   const [gouvernorats, setGouvernorats] = useState([]);
+  const [atLeastOneGenderChecked, setAtLeastOneGenderChecked] = useState(true);
+  const [filteredEntrepreneurs, setFilteredEntrepreneurs] = useState([]);
 
   useEffect(() => {
-    const uniqueSectors = [...new Set(entrepreneurs.map(e => e.secteurActivites))];
-    const uniqueRegions = [...new Set(entrepreneurs.map(e => e.region))];
-    const uniqueGouvernorats = [...new Set(entrepreneurs.map(e => e.gouvernorat))];
+    const uniqueSectors = [...new Set(entrepreneurs.map((e) => e.secteurActivites))];
+    const uniqueRegions = [...new Set(entrepreneurs.map((e) => e.region))];
+    const uniqueGouvernorats = [...new Set(entrepreneurs.map((e) => e.gouvernorat))];
     setSectors(uniqueSectors);
     setRegions(uniqueRegions);
     setGouvernorats(uniqueGouvernorats);
   }, [entrepreneurs]);
 
+  useEffect(() => {
+    // Check if at least one gender checkbox is checked
+    setAtLeastOneGenderChecked(filters.male || filters.female);
+  }, [filters.male, filters.female]);
+
+  useEffect(() => {
+    // Filter entrepreneurs based on search input
+    const filtered = entrepreneurs.filter(entrepreneur =>
+      Object.values(entrepreneur).some(val =>
+        val.toString().toLowerCase().includes(filters.search.toLowerCase())
+      )
+    );
+    setFilteredEntrepreneurs(filtered);
+  }, [filters.search, entrepreneurs]);
+
   const handleFilterChange = (event) => {
-    setFilters({ ...filters, [event.target.name]: event.target.value });
+    const { name, value } = event.target;
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      [name]: value
+    }));
+  };
+
+  const handleGenderChange = (event) => {
+    const { name, checked } = event.target;
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      [name]: checked
+    }));
   };
 
   const handleFilterSubmit = (event) => {
     event.preventDefault();
-    onFilterUpdate(filters); // Call callback to update parent component with filters
+    onFilterUpdate(filters);
   };
 
   return (
-    <CCard>
-      <CCardHeader className="bg-dark text-light">Advanced Filter</CCardHeader>
+    <CCard className="mb-4 shadow">
+      <CCardHeader className="bg-primary text-white">Advanced Filter</CCardHeader>
       <CCardBody>
         <CForm onSubmit={handleFilterSubmit}>
-          <CRow>
+          <CRow className="mb-3">
             <CCol md="4">
-              <div className="mb-3">
-                <CFormLabel htmlFor="sector">Sector</CFormLabel>
-                <CFormSelect name="sector" value={filters.sector} onChange={handleFilterChange}>
-                  <option value="">All Sectors</option>
-                  {sectors.map((sector) => (
-                    <option key={sector} value={sector}>{sector}</option>
-                  ))}
-                </CFormSelect>
+              <CFormLabel htmlFor="sector">Sector</CFormLabel>
+              <CFormSelect name="sector" value={filters.sector} onChange={handleFilterChange}>
+                <option value="">All Sectors</option>
+                {sectors.map((sector) => (
+                  <option key={sector} value={sector}>
+                    {sector}
+                  </option>
+                ))}
+              </CFormSelect>
+            </CCol>
+            <CCol md="4">
+              <CFormLabel>Gender</CFormLabel>
+              <div>
+                <input
+                  type="checkbox"
+                  id="male"
+                  name="male"
+                  checked={filters.male}
+                  onChange={handleGenderChange}
+                />
+                <label htmlFor="male" className="mx-2">
+                  Male
+                </label>
+                <input
+                  type="checkbox"
+                  id="female"
+                  name="female"
+                  checked={filters.female}
+                  onChange={handleGenderChange}
+                />
+                <label htmlFor="female" className="mx-2">
+                  Female
+                </label>
               </div>
             </CCol>
             <CCol md="4">
-              <div className="mb-3">
-                <CFormLabel htmlFor="gender">Gender</CFormLabel>
-                <CFormSelect name="gender" value={filters.gender} onChange={handleFilterChange}>
-                  <option value="">All Genders</option>
-                  <option value="homme">Male</option>
-                  <option value="femme">Female</option>
-                </CFormSelect>
-              </div>
-            </CCol>
-            <CCol md="4">
-              <div className="mb-3">
-                <CFormLabel htmlFor="region">Region</CFormLabel>
-                <CFormSelect name="region" value={filters.region} onChange={handleFilterChange}>
-                  <option value="">All Regions</option>
-                  {regions.map((region) => (
-                    <option key={region} value={region}>{region}</option>
-                  ))}
-                </CFormSelect>
-              </div>
+              <CFormLabel htmlFor="region">Region</CFormLabel>
+              <CFormSelect name="region" value={filters.region} onChange={handleFilterChange}>
+                <option value="">All Regions</option>
+                {regions.map((region) => (
+                  <option key={region} value={region}>
+                    {region}
+                  </option>
+                ))}
+              </CFormSelect>
             </CCol>
           </CRow>
           <CRow>
-            <CCol md="4">
-              <div className="mb-3">
-                <CFormLabel htmlFor="ageMin">Min Age</CFormLabel>
-                <CFormInput
-                  type="number"
-                  name="ageMin"
-                  value={filters.ageMin}
-                  placeholder="Min Age"
-                  onChange={handleFilterChange}
-                />
-              </div>
-            </CCol>
-            <CCol md="4">
-              <div className="mb-3">
-                <CFormLabel htmlFor="ageMax">Max Age</CFormLabel>
-                <CFormInput
-                  type="number"
-                  name="ageMax"
-                  value={filters.ageMax}
-                  placeholder="Max Age"
-                  onChange={handleFilterChange}
-                />
-              </div>
-            </CCol>
-            <CCol md="4">
-              <div className="mb-3">
-                <CFormLabel htmlFor="gouvernorat">Gouvernorat</CFormLabel>
-                <CFormSelect name="gouvernorat" value={filters.gouvernorat} onChange={handleFilterChange}>
-                  <option value="">All Gouvernorats</option>
-                  {gouvernorats.map((gouvernorat) => (
-                    <option key={gouvernorat} value={gouvernorat}>{gouvernorat}</option>
-                  ))}
-                </CFormSelect>
-              </div>
-            </CCol>
-          </CRow>
-          <CRow>
-            <CCol md="4">
-              <div className="mb-3">
-                <CFormLabel htmlFor="nom">Nom</CFormLabel>
+            <CCol md="12">
+              <CFormLabel htmlFor="search">Search</CFormLabel>
+              <div className="input-group">
                 <CFormInput
                   type="text"
-                  name="nom"
-                  value={filters.nom}
-                  placeholder="Nom"
+                  id="search"
+                  name="search"
+                  className="form-control"
+                  placeholder="Search..."
+                  value={filters.search}
                   onChange={handleFilterChange}
                 />
-              </div>
-            </CCol>
-            <CCol md="4">
-              <div className="mb-3">
-                <CFormLabel htmlFor="prenom">Prenom</CFormLabel>
-                <CFormInput
-                  type="text"
-                  name="prenom"
-                  value={filters.prenom}
-                  placeholder="Prenom"
-                  onChange={handleFilterChange}
-                />
+                <CButton type="submit" color="primary" className="input-group-text">
+                  <svg className="icon">
+                    <use xlinkHref={cilSearch}></use>
+                  </svg>
+                </CButton>
               </div>
             </CCol>
           </CRow>
-          <CButton type="submit" color="primary">Apply Filters</CButton>
+          <CButton
+            type="submit"
+            color="primary"
+            className="mt-3"
+            disabled={!atLeastOneGenderChecked}
+          >
+            Apply Filters
+          </CButton>
         </CForm>
       </CCardBody>
     </CCard>
