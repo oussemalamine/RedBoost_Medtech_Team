@@ -234,9 +234,9 @@ const CreateContact = () => {
             required
             feedbackInvalid="Gender is required."
           >
-            <option value="">Select Gender</option>
-            <option value="homme">Male</option>
-            <option value="femme">Female</option>
+            <option value="">Sélectionnez le genre</option>
+            <option value="homme">homme</option>
+            <option value="femme">femme</option>
           </CFormSelect>
           </CCol>
           <CCol md='12'>
@@ -376,8 +376,9 @@ const CreateContact = () => {
             <option value="">Forme juridique</option>
             <option value="SAS">SAS</option>
             <option value="SARL">SARL</option>
-            <option value="SAS">SAS</option>
-            <option value="SAS">SAS</option>
+            <option value="SUARL">SUARL</option>
+            <option value="SA">SA</option>
+            <option value="SCA">SCA</option>
           </CFormSelect>
           </CCol>
           </CRow>
