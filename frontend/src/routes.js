@@ -5,6 +5,8 @@ import entrepeneurDetails from './views/entrepeneur/entrepeneurDetails'
 import CategoryMain from './views/category/categoryMain'
 import AddCategoryPage from './views/category/addCategory'
 import AllContacts from './views/contacts/AllContacts'
+import UserDetails from './views/dashboard/UserDetails'
+import TaskDetails from './components/ProgramMonitoring/TaskDetails'
 
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
 const Events = React.lazy(() => import('./components/Events/Events'))
@@ -48,6 +50,9 @@ const routes = [
   { path: '/entrepeneurs/:id', name: ' entrepeneur', element: entrepeneurDetails },
   { path: '/category', name: ' categories', element: CategoryMain },
   { path: '/addCategory', name: 'category', element: AddCategoryPage },
+  { path: '/users/:id', name: 'UserDetails', element: UserDetails },
+  { path: '/:taskId', name: 'TaskDetails', element: TaskDetails}
 ]
 
 export default routes
+

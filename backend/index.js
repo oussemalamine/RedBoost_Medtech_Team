@@ -183,7 +183,7 @@ app.post("/createntrepreneurs", hundleEntrepreneur);
 app.post("/createstartup", handleStartups);
 app.get("/loadAllentrepreneurs", hundleEntrepreneur);
 app.post("/addTask", handleTask);
-app.post("/loadTask/:taskId", handleTask);
+app.post("/loadTaskById", handleTask);
 app.delete("/deleteTask/:taskId", handleTask);
 app.put("/updateTask/:taskId", handleTask);
 app.post("/loadTasks", handleTask);
