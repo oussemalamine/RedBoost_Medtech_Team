@@ -22,56 +22,54 @@ import { IoClose } from 'react-icons/io5'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import axios from 'axios'
-const Task = ({ task }) => {
-  const { taskId } = useParams();
-  console.log('Received Task:', taskId);
-  const dispatch = useDispatch();
-  const [currentTask, setCurrentTask] = useState(task || {});
-  const [newKpiLabel, setNewKpiLabel] = useState('');
-  const [newKpiValue, setNewKpiValue] = useState('');
-  const [newDeliverableName, setNewDeliverableName] = useState('');
-  const [newRapportTitle, setNewRapportTitle] = useState('');
-  const [newRapportText, setNewRapportText] = useState('');
-  const [newComment, setNewComment] = useState('');
-  const [deliverableFile, setDeliverableFile] = useState(null);
+
+const TaskDetails = () => {
+  const { taskId } = useParams()
+  const [task, setTask] = useState(null)
+  const dispatch = useDispatch()
+  const [currentTask, setCurrentTask] = useState(task || {})
+  const [newKpiLabel, setNewKpiLabel] = useState('')
+  const [newKpiValue, setNewKpiValue] = useState('')
+  const [newDeliverableName, setNewDeliverableName] = useState('')
+  const [newRapportTitle, setNewRapportTitle] = useState('')
+  const [newRapportText, setNewRapportText] = useState('')
+  const [newComment, setNewComment] = useState('')
+  const [deliverableFile, setDeliverableFile] = useState(null)
+
+  useEffect(() => {
+    setCurrentTask(task || {})
+  }, [task])
 
   useEffect(() => {
     const fetchTask = async () => {
       try {
         const response = await axios.post('http://localhost:5000/loadTaskById', {
           taskId: taskId,
-        });
-        console.log('Task details fetched successfully:', response.data);
-        setTask(response.data);
+        })
+        console.log('Task details fetched successfully:', response.data)
+        setTask(response.data)
       } catch (error) {
-        console.error('Error fetching task details:', error);
+        console.error('Error fetching task details:', error)
       }
-    };
+    }
 
-    fetchTask();
-  }, [taskId]);
-  
+    fetchTask()
+  }, [taskId])
 
-  useEffect(() => {
-    setCurrentTask(task || {});
-  }, [task]);
-
+  if (!task) {
+    return <div>Loading...</div>
+  }
   const handleToggleTaskStatus = () => {
     if (task.status === 'inProgress' && task.deliverables.length === 0) {
       alert('Please add a deliverable before changing the status')
       return
     }
 
-    let updatedStatusMessage = ''
-    if (task.status === 'completed') {
-      updatedStatusMessage = 'Task in progress'
-    } else {
-      updatedStatusMessage = 'Task completed'
-    }
+    const updatedStatus = task.status === 'completed' ? 'inProgress' : 'completed'
 
     const updatedTask = {
       ...task,
-      status: task.status === 'completed' ? 'inProgress' : 'completed',
+      status: updatedStatus,
     }
 
     dispatch(
@@ -81,8 +79,7 @@ const Task = ({ task }) => {
       }),
     )
 
-    setCurrentTask(updatedTask)
-    setStatusMessage(updatedStatusMessage)
+    window.location.reload()
   }
 
   const notifyError = (field) => {
@@ -97,9 +94,9 @@ const Task = ({ task }) => {
 
   const handleAddKpi = () => {
     if (newKpiLabel === '') {
-      return notifyError('Kpi Label')
+      return notifyError('KPI Label')
     } else if (newKpiValue === '') {
-      return notifyError('Kpi Value')
+      return notifyError('KPI Value')
     }
     const updatedTask = {
       ...task,
@@ -111,7 +108,7 @@ const Task = ({ task }) => {
         taskData: updatedTask,
       }),
     )
-    setCurrentTask(updatedTask)
+    window.location.reload()
   }
 
   const handleAddDeliverable = async (e) => {
@@ -128,7 +125,7 @@ const Task = ({ task }) => {
       const formData = new FormData()
       formData.append('file', deliverableFile)
 
-      console.log('Uploading file:', deliverableFile) // Debugging log
+      console.log('Uploading file:', deliverableFile)
 
       const response = await axios.post('http://localhost:5000/upload', formData, {
         headers: {
@@ -136,7 +133,7 @@ const Task = ({ task }) => {
         },
       })
 
-      console.log('Upload response:', response.data) // Debugging log
+      console.log('Upload response:', response.data)
 
       const updatedTask = {
         ...task,
@@ -155,11 +152,9 @@ const Task = ({ task }) => {
           taskData: updatedTask,
         }),
       )
-      setCurrentTask(updatedTask)
-      setNewDeliverableName('')
-      setDeliverableFile(null)
+      window.location.reload()
     } catch (error) {
-      console.error('Error uploading file:', error) // Debugging log
+      console.error('Error uploading file:', error)
       toast.error('Failed to upload file. Please try again.')
     }
   }
@@ -180,19 +175,24 @@ const Task = ({ task }) => {
         taskData: updatedTask,
       }),
     )
-    setCurrentTask(updatedTask)
+    window.location.reload()
   }
 
   const handleAddComment = () => {
+    if (newComment === '') {
+      return notifyError('Comment')
+    }
+    const updatedTask = {
+      ...task,
+      comments: [...task.comments, { text: newComment }],
+    }
     dispatch(
       updateTask({
         taskId: task._id,
-        taskData: {
-          ...task,
-          comments: [...task.comments, { text: newComment }],
-        },
+        taskData: updatedTask,
       }),
     )
+    window.location.reload()
   }
 
   const getColorByIndex = (index) => {
@@ -214,7 +214,6 @@ const Task = ({ task }) => {
     }
     return '' // Fallback for invalid date
   }
-
   return (
     <>
       <ToastContainer />
@@ -266,13 +265,14 @@ const Task = ({ task }) => {
               <div>
                 <h5>{currentTask.taskName} Resources:</h5>
                 <CListGroup>
-                  {currentTask.resources.map((resource, index) => (
-                    <CListGroupItem key={index}>
-                      <CButton href={resource.url} download color="link">
-                        {resource.fileName}
-                      </CButton>
-                    </CListGroupItem>
-                  ))}
+                  {currentTask.resources &&
+                    currentTask.resources.map((resource, index) => (
+                      <CListGroupItem key={index}>
+                        <CButton href={resource.url} download color="link">
+                          {resource.fileName}
+                        </CButton>
+                      </CListGroupItem>
+                    ))}
                 </CListGroup>
               </div>
             </CCardBody>
@@ -295,28 +295,29 @@ const Task = ({ task }) => {
                     justifyContent: 'center',
                   }}
                 >
-                  {currentTask.kpis.map((kpi, index) => (
-                    <div
-                      key={index}
-                      className={`card text-bg-${getColorByIndex(index)} mb-3`}
-                      style={{ minWidth: '260px', marginRight: '10px' }}
-                    >
+                  {currentTask.kpis &&
+                    currentTask.kpis.map((kpi, index) => (
                       <div
-                        className="card-header"
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'space-between',
-                        }}
+                        key={index}
+                        className={`card text-bg-${getColorByIndex(index)} mb-3`}
+                        style={{ minWidth: '260px', marginRight: '10px' }}
                       >
-                        KPI-{index} <IoClose />
+                        <div
+                          className="card-header"
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                          }}
+                        >
+                          KPI-{index} <IoClose />
+                        </div>
+                        <div className="card-body">
+                          <h5 className="card-title">{kpi.label}</h5>
+                          <p className="card-text">{kpi.count}</p>
+                        </div>
                       </div>
-                      <div className="card-body">
-                        <h5 className="card-title">{kpi.label}</h5>
-                        <p className="card-text">{kpi.count}</p>
-                      </div>
-                    </div>
-                  ))}
+                    ))}
                 </div>
                 <CListGroupItem>
                   <label htmlFor="newKpiLabel">Label:</label>
@@ -351,13 +352,14 @@ const Task = ({ task }) => {
             <CCardHeader className="bg-info text-light">Documents</CCardHeader>
             <CCardBody>
               <CListGroup>
-                {currentTask.deliverables.map((deliverable, index) => (
-                  <CListGroupItem key={index}>
-                    <CButton onClick={() => handleDownload(deliverable.fileUrl)} color="link">
-                      {deliverable.fileName}
-                    </CButton>
-                  </CListGroupItem>
-                ))}
+                {currentTask.deliverables &&
+                  currentTask.deliverables.map((deliverable, index) => (
+                    <CListGroupItem key={index}>
+                      <CButton onClick={() => handleDownload(deliverable.fileUrl)} color="link">
+                        {deliverable.fileName}
+                      </CButton>
+                    </CListGroupItem>
+                  ))}
                 <CListGroupItem>
                   <CForm onSubmit={handleAddDeliverable}>
                     <label htmlFor="newDeliverableName">Name:</label>
@@ -403,33 +405,34 @@ const Task = ({ task }) => {
                 padding: '20px',
               }}
             >
-              {currentTask.reports.map((report, index) => (
-                <div
-                  style={{ minWidth: '300px', margin: '10px' }}
-                  className={`card radius-10 border-start border-0 border-3 border-${getColorByIndex(index)} shadow`}
-                >
-                  <IoClose
-                    style={{
-                      position: 'absolute',
-                      top: '0',
-                      right: '0',
-                      fontSize: '20px',
-                      margin: '5px',
-                    }}
-                  />
-                  <div className="card-body">
-                    <div className="d-flex align-items-center">
-                      <div>
-                        <p className="mb-0 text-secondary">{report.label}</p>
-                        <p className="mb-0 font-13">{report.count}</p>
-                      </div>
-                      <div className="widgets-icons-2 rounded-circle bg-gradient-ohhappiness text-white ms-auto">
-                        <i className="fa fa-bar-chart"></i>
+              {currentTask.reports &&
+                currentTask.reports.map((report, index) => (
+                  <div
+                    style={{ minWidth: '300px', margin: '10px' }}
+                    className={`card radius-10 border-start border-0 border-3 border-${getColorByIndex(index)} shadow`}
+                  >
+                    <IoClose
+                      style={{
+                        position: 'absolute',
+                        top: '0',
+                        right: '0',
+                        fontSize: '20px',
+                        margin: '5px',
+                      }}
+                    />
+                    <div className="card-body">
+                      <div className="d-flex align-items-center">
+                        <div>
+                          <p className="mb-0 text-secondary">{report.label}</p>
+                          <p className="mb-0 font-13">{report.count}</p>
+                        </div>
+                        <div className="widgets-icons-2 rounded-circle bg-gradient-ohhappiness text-white ms-auto">
+                          <i className="fa fa-bar-chart"></i>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))}
             </div>
             <CCardBody>
               <CFormInput
@@ -466,4 +469,4 @@ const Task = ({ task }) => {
   )
 }
 
-export default Task
+export default TaskDetails

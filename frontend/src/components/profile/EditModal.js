@@ -16,7 +16,8 @@ import axiosInstance from '../../axiosInstance';
 import { useSelector, useDispatch } from 'react-redux';
 import { setUserData } from '../../app/features/userData/userData';
 
-const EditProfileModal = ({ setUpdateLog, isOpen, setIsOpen }) => {
+const EditProfileModal = async ({ setUpdateLog, isOpen, setIsOpen }) => {{
+  
   const [editedData, setEditedData] = useState({});
   const user = useSelector((state) => state.userData.userData);
   const dispatch = useDispatch();
