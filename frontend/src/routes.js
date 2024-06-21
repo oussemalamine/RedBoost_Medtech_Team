@@ -53,4 +53,6 @@ const routes = [
   { path: '/users/:id', name: 'UserDetails', element: UserDetails },
   { path: '/:taskId', name: 'TaskDetails', element: TaskDetails}
 ]
+
 export default routes
+

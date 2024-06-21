@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
 import * as XLSX from 'xlsx';
 import { CButton } from '@coreui/react';
-import { toast } from 'react-toastify';  // Assuming you are using react-toastify for notifications
+import { ToastContainer, toast } from 'react-toastify'; // Assuming you are using react-toastify for notifications
+import 'react-toastify/dist/ReactToastify.css'; // Import the CSS for styling
 import axiosInstance from '../../axiosInstance.js';
 
 export function ImportExport() {
   const secteursActivites = [
-    'Agriculture durable', 'Cosmétique', 'Recyclage', 'Green Tech', 
-    'Agro-alimentaire', 'Créatif et culturel', 'Tourisme durable', 
-    'Optimisation de la consommation', 'Énergie renouvelable', 
+    'Agriculture durable', 'Cosmétique', 'Recyclage', 'Green Tech',
+    'Agro-alimentaire', 'Créatif et culturel', 'Tourisme durable',
+    'Optimisation de la consommation', 'Énergie renouvelable',
     'Gestion des ressources hydrauliques'
   ];
 
@@ -20,10 +21,10 @@ export function ImportExport() {
   ];
 
   const [contactData, setContactData] = useState({
-    nom: '', prenom: '', adresse: '', email: '', dateDeNaissance: '', 
-    region: '', gender: '', startupName: '', description: '', 
-    gouvernorat: '', secteurActivites: '', nombreCofondateurs: '', 
-    nombreCofondateursFemmes: '', creeeOuNon: '', formeJuridique: '', 
+    nom: '', prenom: '', adresse: '', email: '', dateDeNaissance: '',
+    region: '', gender: '', startupName: '', description: '',
+    gouvernorat: '', secteurActivites: '', nombreCofondateurs: '',
+    nombreCofondateursFemmes: '', creeeOuNon: '', formeJuridique: '',
     nombreEmploisCrees: '', coutProjet: ''
   });
 
@@ -35,15 +36,15 @@ export function ImportExport() {
 
   const generateTemplateData = () => {
     return [{
-      "Nom": contactData.nom, "Prénom": contactData.prenom, 
-      "Adresse": contactData.adresse, "Email": contactData.email, 
-      "Date de Naissance": contactData.dateDeNaissance, "Region": contactData.region, 
-      "Gender": contactData.gender, "Startup Name": contactData.startupName, 
-      "Description": contactData.description, "Gouvernorat": contactData.gouvernorat, 
-      "Secteur Activités": contactData.secteurActivites, 
-      "Nombre Cofondateurs": contactData.nombreCofondateurs, 
-      "Nombre Cofondateurs Femmes": contactData.nombreCofondateursFemmes, 
-      "Créée Ou Non": contactData.creeeOuNon, "Forme Juridique": contactData.formeJuridique, 
+      "Nom": contactData.nom, "Prénom": contactData.prenom,
+      "Adresse": contactData.adresse, "Email": contactData.email,
+      "Date de Naissance": contactData.dateDeNaissance, "Region": contactData.region,
+      "Gender": contactData.gender, "Startup Name": contactData.startupName,
+      "Description": contactData.description, "Gouvernorat": contactData.gouvernorat,
+      "Secteur Activités": contactData.secteurActivites,
+      "Nombre Cofondateurs": contactData.nombreCofondateurs,
+      "Nombre Cofondateurs Femmes": contactData.nombreCofondateursFemmes,
+      "Créée Ou Non": contactData.creeeOuNon, "Forme Juridique": contactData.formeJuridique,
       "Nombre Emplois Créés": contactData.nombreEmploisCrees, "Coût Projet": contactData.coutProjet
     }];
   };
@@ -77,6 +78,8 @@ export function ImportExport() {
     fileInput.click();
   };
 
+  let stopProcess = false; // Flag to stop the process after encountering the first error
+
   const excelDateToJSDate = (serial) => {
     const utc_days = Math.floor(serial - 25569);
     const utc_value = utc_days * 86400;
@@ -85,6 +88,7 @@ export function ImportExport() {
   };
 
   const handleImport = (file) => {
+    if (stopProcess) return; // Check if the flag is set to stop the process
     const reader = new FileReader();
     reader.onload = (e) => {
       try {
@@ -97,17 +101,20 @@ export function ImportExport() {
         if (validateData(jsonData)) {
           processData(jsonData);
         } else {
-          toast.error('Imported data is not valid.');
           console.error("Imported data is not valid.");
+          toast.error('Imported data is not valid.');
+          stopProcess = true; // Set the flag to stop further processing
         }
       } catch (error) {
         console.error('Error parsing file:', error);
         toast.error('Failed to parse file.');
+        stopProcess = true; // Set the flag to stop further processing
       }
     };
     reader.onerror = (error) => {
       console.error('Error reading file:', error);
       toast.error('Failed to read file.');
+      stopProcess = true; // Set the flag to stop further processing
     };
     reader.readAsArrayBuffer(file);
   };
@@ -115,6 +122,7 @@ export function ImportExport() {
   const validateData = (data) => {
     if (!data || data.length === 0) {
       console.error("Imported data is empty.");
+      toast.error('Imported data is empty. Please provide data to import.');
       return false;
     }
 
@@ -126,42 +134,61 @@ export function ImportExport() {
       "Forme Juridique", "Nombre Emplois Créés", "Coût Projet"
     ];
 
+    const headersMapping = {
+      "Région": "Region",
+      "Genre": "Gender",
+      "Nom de Startup": "Startup Name",
+      "Secteur d'activités": "Secteur Activités",
+      "Nombre de Cofondateurs": "Nombre Cofondateurs",
+      "Nombre de Cofondateurs Femmes": "Nombre Cofondateurs Femmes",
+      "Créée ou Non": "Créée Ou Non",
+      "Nombre d'emplois Créés": "Nombre Emplois Créés",
+      "Coût du Projet": "Coût Projet"
+    };
+
     const headers = data[0].map(header => header.trim());
     if (!validHeaders.every(header => headers.includes(header))) {
-      console.error("Invalid headers detected:", headers.filter(header => !validHeaders.includes(header)));
+      const invalidHeaders = headers.filter(header => !validHeaders.includes(header));
+      invalidHeaders.forEach(header => {
+        console.error(`Invalid header detected: ${header}`);
+        toast.error(`Invalid header detected: ${header}`);
+      });
       return false;
     }
 
-    const validationRules = {
-      "Nom": value => typeof value === "string" && value.trim().length > 0,
-      "Prénom": value => typeof value === "string" && value.trim().length > 0,
-      "Adresse": value => typeof value === "string" && value.trim().length > 0,
-      "Email": value => typeof value === "string" && emailRegex.test(value.trim()),
-      "Date de Naissance": value => !isNaN(value) || /^\d{2}\/\d{2}\/\d{4}$/.test(value),
-      "Region": value => typeof value === "string" && regions.includes(value.trim()),
-      "Gender": value => typeof value === "string" && (value.trim() === "homme" || value.trim() === "femme"),
-      "Startup Name": value => typeof value === "string" && value.trim().length > 0,
-      "Description": value => typeof value === "string" && value.trim().length > 0,
-      "Gouvernorat": value => typeof value === "string" && regions.includes(value.trim()),
-      "Secteur Activités": value => typeof value === "string" && secteursActivites.includes(value.trim()),
-      "Nombre Cofondateurs": value => !isNaN(value) && value >= 0,
-      "Nombre Cofondateurs Femmes": value => !isNaN(value) && value >= 0,
-      "Créée Ou Non": value => typeof value === "string" && (value.trim().toLowerCase() === "oui" || value.trim().toLowerCase() === "non"),
-      "Forme Juridique": value => typeof value === "string" && ["SARL", "SUARL", "SA", "SAS"].includes(value.trim()),
-      "Nombre Emplois Créés": value => !isNaN(value) && value >= 0,
-      "Coût Projet": value => !isNaN(value) && value >= 0
-    };
+    const duplicatedEmails = {}; // Collect duplicate emails
+    const invalidCells = [];
 
     for (let i = 1; i < data.length; i++) {
       const row = data[i];
       for (let j = 0; j < headers.length; j++) {
         const header = headers[j];
         const cellValue = row[j];
+        if (header === "Email" && duplicatedEmails[cellValue]) {
+          console.error(`Duplicated email found: ${cellValue} in row ${i + 1}`);
+          toast.error(`Duplicated email found: ${cellValue} in row ${i + 1}`);
+        }
         if (!validationRules[header](cellValue)) {
           console.error(`Validation failed for header "${header}" in row ${i + 1}`);
-          return false;
+          const errorMsg = typeof validationRules[header](cellValue) === 'string' ? validationRules[header](cellValue) : 'Unknown error';
+          invalidCells.push({ row: i + 1, column: header, value: cellValue, error: errorMsg });
+        } else if (header === "Email") {
+          if (duplicatedEmails[cellValue]) {
+            console.error(`Duplicated email found: ${cellValue} in row ${i + 1}`);
+            toast.error(`Duplicated email found: ${cellValue} in row ${i + 1}`);
+          } else {
+            duplicatedEmails[cellValue] = true;
+          }
         }
       }
+    }
+
+    if (invalidCells.length > 0) {
+      invalidCells.forEach(({ row, column, value, error }) => {
+        console.error(`Invalid data in row ${row}, column ${column}: Value "${value}" - ${error}`);
+        toast.error(`Invalid data in row ${row}, column ${column}: Value "${value}" - ${error}`);
+      });
+      return false;
     }
 
     return true;
@@ -175,9 +202,9 @@ export function ImportExport() {
         if (header === 'Date de Naissance' && typeof cellValue === 'number') {
           cellValue = excelDateToJSDate(cellValue);
           const day = ('0' + cellValue.getDate()).slice(-2);
-                const month = ('0' + (cellValue.getMonth() + 1)).slice(-2);
-                const year = cellValue.getFullYear();
-            cellValue = `${day}/${month}/${year}`;
+          const month = ('0' + (cellValue.getMonth() + 1)).slice(-2);
+          const year = cellValue.getFullYear();
+          cellValue = `${day}/${month}/${year}`;
         }
         contact[header] = cellValue;
         return contact;
@@ -217,18 +244,18 @@ export function ImportExport() {
     } catch (error) {
       console.error('Error saving contacts:', error);
       toast.error('Failed to save contacts.');
-    } 
+    }
   };
-  
-
-  return (
-    <div className="d-flex justify-content-end mt-2 ">
-      <CButton onClick={handleExportClick} color="primary" className="m-2">
+/*<CButton onClick={handleExportClick}  color="primary" className="m-2">
         Export Template
-      </CButton>
+      </CButton>*/
+  return (
+   <div>
+      
       <CButton onClick={handleImportClick} color="secondary" className="m-2">
         Import Data
       </CButton>
+      <ToastContainer />
     </div>
   );
 }
