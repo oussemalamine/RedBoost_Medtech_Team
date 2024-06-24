@@ -14,6 +14,7 @@ import { Link } from 'react-router-dom';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import { useSelector, useDispatch } from 'react-redux';
 import { deleteProgram } from '../../src/app/features/programs/programsSlice';
+import {updateProgram} from '../../src/app/features/programs/programsSlice';
 
 export const ProgramCard = ({ logo, title, programId, onEdit }) => {
   const dispatch = useDispatch();

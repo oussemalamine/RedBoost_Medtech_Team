@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import axiosInstance from '../../axiosInstance';
-import { createProgram } from '../../app/features/programs/programsSlice';
+import { createProgram,loadPrograms } from '../../app/features/programs/programsSlice';
 import { ProgramCard } from '../../components/ProgramCard';
 import {
   CRow,
