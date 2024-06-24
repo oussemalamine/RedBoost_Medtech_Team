@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { useParams } from 'react-router-dom'
 import {
   CCard,
   CCardBody,
@@ -21,23 +22,39 @@ import { IoClose } from 'react-icons/io5'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import axios from 'axios'
-
 const Task = ({ task }) => {
-  const dispatch = useDispatch()
-  const [currentTask, setCurrentTask] = useState(task)
-  const [newKpiLabel, setNewKpiLabel] = useState('')
-  const [newKpiValue, setNewKpiValue] = useState('')
-  const [newDeliverableName, setNewDeliverableName] = useState('')
-  const [newRapportTitle, setNewRapportTitle] = useState('')
-  const [newRapportText, setNewRapportText] = useState('')
-  const [newComment, setNewComment] = useState('')
-  const [deliverableFile, setDeliverableFile] = useState(null)
-  const [statusMessage, setStatusMessage] = useState(task.status === 'completed' ? 'Task completed' : 'Task in progress')
+  const { taskId } = useParams();
+  console.log('Received Task:', taskId);
+  const dispatch = useDispatch();
+  const [currentTask, setCurrentTask] = useState(task || {});
+  const [newKpiLabel, setNewKpiLabel] = useState('');
+  const [newKpiValue, setNewKpiValue] = useState('');
+  const [newDeliverableName, setNewDeliverableName] = useState('');
+  const [newRapportTitle, setNewRapportTitle] = useState('');
+  const [newRapportText, setNewRapportText] = useState('');
+  const [newComment, setNewComment] = useState('');
+  const [deliverableFile, setDeliverableFile] = useState(null);
 
   useEffect(() => {
-    console.log("Task Prop:", task) // Debugging log
-    console.log("Current Task:", currentTask); // Debugging log
-  }, [task, currentTask])
+    const fetchTask = async () => {
+      try {
+        const response = await axios.post('http://localhost:5000/loadTaskById', {
+          taskId: taskId,
+        });
+        console.log('Task details fetched successfully:', response.data);
+        setTask(response.data);
+      } catch (error) {
+        console.error('Error fetching task details:', error);
+      }
+    };
+
+    fetchTask();
+  }, [taskId]);
+  
+
+  useEffect(() => {
+    setCurrentTask(task || {});
+  }, [task]);
 
   const handleToggleTaskStatus = () => {
     if (task.status === 'inProgress' && task.deliverables.length === 0) {
@@ -127,7 +144,7 @@ const Task = ({ task }) => {
           ...task.deliverables,
           {
             fileName: newDeliverableName ? newDeliverableName : deliverableFile.name,
-            fileUrl: response.data.secure_url, 
+            fileUrl: response.data.secure_url,
           },
         ],
       }
@@ -219,13 +236,13 @@ const Task = ({ task }) => {
                   </p>
                   <p className="card-text">
                     <strong>Target Date:</strong>{' '}
-                    {currentTask.targetDate ? formatDate(currentTask.targetDate) : 'No target date set'}
+                    {currentTask.endDate ? formatDate(currentTask.endDate) : 'No target date set'}
                   </p>
 
                   <p className="card-text">
                     <strong>Status:</strong> {currentTask.status}
                   </p>
-                  {task.status === 'inProgress' ? (
+                  {currentTask.status === 'inProgress' ? (
                     <CFormCheck
                       className="mb-3"
                       style={{ display: task.status === 'notStarted' ? 'none' : 'block' }}
@@ -374,7 +391,6 @@ const Task = ({ task }) => {
               </CListGroup>
             </CCardBody>
           </CCard>
-
 
           <CCard className="mt-3 mb-3">
             <CCardHeader className="bg-info text-light">Reporting Section</CCardHeader>

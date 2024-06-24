@@ -1,18 +1,16 @@
-import React, { useState, useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { RiMiniProgramFill } from 'react-icons/ri'
-import { FaHourglassStart } from 'react-icons/fa'
-import { FaHourglassEnd } from 'react-icons/fa'
-import { AiFillDollarCircle } from 'react-icons/ai'
-import { GiPirateCaptain } from 'react-icons/gi'
-
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { RiMiniProgramFill } from 'react-icons/ri';
+import { FaHourglassStart, FaHourglassEnd } from 'react-icons/fa';
+import { AiFillDollarCircle } from 'react-icons/ai';
+import { GiPirateCaptain } from 'react-icons/gi';
 import {
   createActivity,
   updateActivity,
   loadActivitiesByProgramId,
-} from '../../app/features/activity/activitySlice'
-import { addRoutes } from '../../app/features/routeSlice/routeSlice'
-import { loadPrograms } from '../../app/features/programs/programsSlice'
+} from '../../app/features/activity/activitySlice';
+import { addRoutes } from '../../app/features/routeSlice/routeSlice';
+import { loadPrograms } from '../../app/features/programs/programsSlice';
 import {
   CContainer,
   CRow,
@@ -31,37 +29,44 @@ import {
   CPagination,
   CPaginationItem,
   CSpinner,
-} from '@coreui/react'
-import FullCalendar from '@fullcalendar/react'
-import dayGridPlugin from '@fullcalendar/daygrid'
-import AddActivity from './AddActivity'
-import { useNavigate } from 'react-router-dom'
-import classNames from 'classnames'
-const EventList = ({ events }) => {
-  const itemsPerPage = 5
-  const [currentPage, setCurrentPage] = useState(1)
+  CTooltip,
+} from '@coreui/react';
+import FullCalendar from '@fullcalendar/react';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import AddActivity from './AddActivity';
+import { useNavigate } from 'react-router-dom';
 
-  const indexOfLastItem = currentPage * itemsPerPage
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage
-  const currentEvents = events.slice(indexOfFirstItem, indexOfLastItem)
+const EventList = ({ events, program, navigate }) => {
+  const itemsPerPage = 5;
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentEvents = events.slice(indexOfFirstItem, indexOfLastItem);
 
   const paginate = (pageNumber) => {
-    setCurrentPage(pageNumber)
-  }
+    setCurrentPage(pageNumber);
+  };
 
-  const totalPages = Math.ceil(events.length / itemsPerPage)
+  const totalPages = Math.ceil(events.length / itemsPerPage);
 
   const goToPreviousPage = () => {
     if (currentPage > 1) {
-      setCurrentPage(currentPage - 1)
+      setCurrentPage(currentPage - 1);
     }
-  }
+  };
 
   const goToNextPage = () => {
     if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1)
+      setCurrentPage(currentPage + 1);
     }
-  }
+  };
+
+  const handleDateClickList = (activity) => {
+    console.log('activity', activity);
+    // Navigate to the activity details page without reloading the entire app
+    navigate(`/Dash/Monitoring/${program.programTitle}/${activity.name}`);
+  };
 
   return (
     <>
@@ -75,7 +80,12 @@ const EventList = ({ events }) => {
         </CTableHead>
         <CTableBody>
           {currentEvents.map((event, index) => (
-            <CTableRow key={index}>
+            <CTableRow
+              key={index}
+              onClick={() => handleDateClickList(event)}
+              style={{ cursor: 'pointer' }}
+              className="hover-effect"
+            >
               <CTableDataCell>
                 <div
                   className="rounded-circle shadow-1-strong me-3 d-flex justify-content-center align-items-center"
@@ -105,25 +115,26 @@ const EventList = ({ events }) => {
         </CPaginationItem>
       </CPagination>
     </>
-  )
-}
+  );
+};
 
 function Program({ program, activities }) {
-  const navigate = useNavigate()
-  const dispatch = useDispatch()
-  const [open, setOpen] = useState(false)
-  console.log('activities', activities)
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [open, setOpen] = useState(false);
+  console.log('activities', activities);
+
   const handleAddActivity = (activityData) => {
-    console.log('activityData', activityData)
-    console.log('program id', program._id)
+    console.log('activityData', activityData);
+    console.log('program id', program._id);
     const finalActivityData = {
       ...activityData,
       programId: program._id,
       createdBy: program.authorizedUsers[0],
-    }
-    console.log('finalActivityData', finalActivityData)
+    };
+    console.log('finalActivityData', finalActivityData);
     dispatch(createActivity(finalActivityData)).then((activity) => {
-      console.log('activity dispatch', activity)
+      console.log('activity dispatch', activity);
       dispatch(
         addRoutes([
           {
@@ -131,11 +142,12 @@ function Program({ program, activities }) {
             name: activity.payload.name,
             activityId: activity.payload._id,
           },
-        ]),
-      )
-    })
-    setOpen(false)
-  }
+        ])
+      );
+    });
+    setOpen(false);
+  };
+
   if (!program) {
     return (
       <CContainer style={{ padding: '20px' }} className="mt-4">
@@ -145,8 +157,9 @@ function Program({ program, activities }) {
           </CCol>
         </CRow>
       </CContainer>
-    )
+    );
   }
+
   const programInfo = [
     {
       icon: <RiMiniProgramFill />,
@@ -169,12 +182,14 @@ function Program({ program, activities }) {
       name: 'Program Lead',
       value: JSON.stringify(program.authorizedUsers).split('"')[1],
     },
-  ]
+  ];
+
   const handleDateClick = (activity) => {
-    console.log('activity', activity)
+    console.log('activity', activity);
     // Navigate to the activity details page without reloading the entire app
-    navigate(`/Dash/Monitoring/${program.programTitle}/${activity.title}`)
-  }
+    navigate(`/Dash/Monitoring/${program.programTitle}/${activity.title}`);
+  };
+
   return (
     <CContainer style={{ padding: '20px' }} className="mt-4">
       <AddActivity
@@ -186,9 +201,8 @@ function Program({ program, activities }) {
       <CRow className="mb-3">
         <CCol xs={12} md={8}>
           <CCard className="text-center mb-3">
-            <CCardHeader className="bg-dark text-light">Activites Calendar</CCardHeader>
+            <CCardHeader className="bg-dark text-light">Activities Calendar</CCardHeader>
             <CCardBody>
-              {' '}
               <FullCalendar
                 plugins={[dayGridPlugin]}
                 events={activities.map((activity) => ({
@@ -207,6 +221,12 @@ function Program({ program, activities }) {
                   right: 'dayGridMonth,dayGridWeek,dayGridDay',
                 }}
                 initialDate={new Date()}
+                eventMouseEnter={(info) => {
+                  info.el.style.borderColor = 'red';
+                }}
+                eventMouseLeave={(info) => {
+                  info.el.style.borderColor = '';
+                }}
               />
             </CCardBody>
           </CCard>
@@ -224,24 +244,31 @@ function Program({ program, activities }) {
                   Add Activity
                 </CButton>
               </div>
-              <EventList events={activities} />
+              <EventList events={activities} navigate={navigate} program={program} />
             </CCardBody>
           </CCard>
         </CCol>
       </CRow>
       <CRow>
         <CCol>
-          <CCard>
-            <CCardHeader style={{ textAlign: 'center' }} className="bg-dark text-light">
+          <CCard style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <CCardHeader
+              style={{ textAlign: 'center', fontSize: '120%' }}
+              className="bg-dark text-light"
+            >
               Program Information
             </CCardHeader>
-            <CCardBody style={{ padding: '50px 0px' }}>
+            <CCardBody style={{ paddingTop: '2%', marginLeft: '6%' }}>
               <CTable responsive="sm">
                 <CTableBody>
                   {programInfo.map((detail, index) => (
                     <CTableRow key={index}>
                       <CTableHeaderCell style={{ display: 'flex', alignItems: 'center' }}>
-                        {detail.icon}
+                        <div style={{ paddingRight: '8%' }}>
+                          <CTooltip content={detail.name}>
+                            {detail.icon}
+                          </CTooltip>
+                        </div>
                         {detail.name}:
                       </CTableHeaderCell>
                       <CTableDataCell>{detail.value}</CTableDataCell>
@@ -254,7 +281,7 @@ function Program({ program, activities }) {
         </CCol>
       </CRow>
     </CContainer>
-  )
+  );
 }
 
-export default Program
+export default Program;
