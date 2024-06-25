@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import { useParams } from 'react-router-dom'
 import {
   CCard,
   CCardBody,
@@ -21,40 +20,46 @@ import img from '../Images/details.webp'
 import { IoClose } from 'react-icons/io5'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import { loadUserById } from '../../app/features/users/usersSlice'
 import axios from 'axios'
+
 const Task = ({ task }) => {
-  const { taskId } = useParams();
-  console.log('Received Task:', taskId);
-  const dispatch = useDispatch();
-  const [currentTask, setCurrentTask] = useState(task || {});
-  const [newKpiLabel, setNewKpiLabel] = useState('');
-  const [newKpiValue, setNewKpiValue] = useState('');
-  const [newDeliverableName, setNewDeliverableName] = useState('');
-  const [newRapportTitle, setNewRapportTitle] = useState('');
-  const [newRapportText, setNewRapportText] = useState('');
-  const [newComment, setNewComment] = useState('');
-  const [deliverableFile, setDeliverableFile] = useState(null);
+  const dispatch = useDispatch()
+  const [currentTask, setCurrentTask] = useState(task)
+  const [user, setUser] = useState(null) // Add state to store user data
+  const [newKpiLabel, setNewKpiLabel] = useState('')
+  const [newKpiValue, setNewKpiValue] = useState('')
+  const [newDeliverableName, setNewDeliverableName] = useState('')
+  const [newRapportTitle, setNewRapportTitle] = useState('')
+  const [newRapportText, setNewRapportText] = useState('')
+  const [newComment, setNewComment] = useState('')
+  const [deliverableFile, setDeliverableFile] = useState(null)
+  const [statusMessage, setStatusMessage] = useState(
+    task.status === 'completed' ? 'Task completed' : 'Task in progress',
+  )
 
   useEffect(() => {
-    const fetchTask = async () => {
+    console.log('Task Prop:', task) // Debugging log
+    console.log('Current Task:', currentTask) // Debugging log
+
+    // Fetch the user data when the component mounts
+    const fetchUser = async (userId) => {
       try {
-        const response = await axios.post('http://localhost:5000/loadTaskById', {
-          taskId: taskId,
-        });
-        console.log('Task details fetched successfully:', response.data);
-        setTask(response.data);
+        // Dispatch the loadUserById action
+        const userData = await dispatch(loadUserById(userId))
+        console.log('User Data:', userData) // Debugging log
+        setUser(userData) // Update the user state with the fetched user data
       } catch (error) {
-        console.error('Error fetching task details:', error);
+        console.error('Error fetching user:', error)
       }
-    };
+    }
 
-    fetchTask();
-  }, [taskId]);
-  
-
-  useEffect(() => {
-    setCurrentTask(task || {});
-  }, [task]);
+    // Check if task has a taskOwner and then fetch the user data
+    if (task.taskOwner) {
+      console.log('Fetching user data for task owner:', task.taskOwner) // Debugging log
+      fetchUser(task.taskOwner)
+    }
+  }, [task.taskOwner, currentTask, dispatch])
 
   const handleToggleTaskStatus = () => {
     if (task.status === 'inProgress' && task.deliverables.length === 0) {
@@ -232,17 +237,20 @@ const Task = ({ task }) => {
                     <strong>Task Name:</strong> {currentTask.taskName}
                   </p>
                   <p className="card-text">
-                    <strong>Task Owner:</strong> {currentTask.taskOwner}
+                    <strong>Task Owner:</strong> {user ? user.username || 'Unknown' : 'Loading...'}
                   </p>
+
                   <p className="card-text">
                     <strong>Target Date:</strong>{' '}
-                    {currentTask.endDate ? formatDate(currentTask.endDate) : 'No target date set'}
+                    {currentTask.targetDate
+                      ? formatDate(currentTask.targetDate)
+                      : 'No target date set'}
                   </p>
 
                   <p className="card-text">
                     <strong>Status:</strong> {currentTask.status}
                   </p>
-                  {currentTask.status === 'inProgress' ? (
+                  {task.status === 'inProgress' ? (
                     <CFormCheck
                       className="mb-3"
                       style={{ display: task.status === 'notStarted' ? 'none' : 'block' }}
