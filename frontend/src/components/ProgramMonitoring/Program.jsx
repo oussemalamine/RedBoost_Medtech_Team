@@ -65,7 +65,7 @@ const EventList = ({ events, program, navigate }) => {
   const handleDateClickList = (activity) => {
     console.log('activity', activity);
     // Navigate to the activity details page without reloading the entire app
-    navigate(`/Dash/Monitoring/${program._id}/${activity._id}`);
+    navigate(`/Dash/Monitoring/${program.programTitle}/${activity.name}`);
   };
 
   return (
@@ -187,7 +187,7 @@ function Program({ program, activities }) {
   const handleDateClick = (activity) => {
     console.log('activity', activity);
     // Navigate to the activity details page without reloading the entire app
-    navigate(`/Dash/Monitoring/${program._id}/${activity.id}`);
+    navigate(`/Dash/Monitoring/${program.programTitle}/${activity.title}`);
   };
 
   return (

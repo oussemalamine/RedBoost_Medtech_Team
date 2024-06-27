@@ -74,23 +74,9 @@ const usersSlice = createSlice({
         state.error = action.error.message;
       })
       .addCase(updateUser.pending, (state) => {
-        state.status = 'loading';
+        state.status = 'loading'
       })
-      // Add extra reducer cases for loadUserById
-      .addCase(loadUserById.pending, (state) => {
-        state.status = 'loading';
-      })
-      .addCase(loadUserById.fulfilled, (state, action) => {
-        state.status = 'succeeded';
-        // Set the user data in state
-        state.users.push(action.payload); // or update the state in any way you need
-      })
-      .addCase(loadUserById.rejected, (state, action) => {
-        state.status = 'failed';
-        state.error = action.error.message;
-      });
   },
-});
-
-export const { setUsers } = usersSlice.actions;
-export default usersSlice.reducer;
+})
+export const { setUsers } = usersSlice.actions
+export default usersSlice.reducer
