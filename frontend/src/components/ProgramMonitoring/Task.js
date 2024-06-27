@@ -38,11 +38,11 @@ const Task = ({ task }) => {
   useEffect(() => {
     const fetchTask = async () => {
       try {
-        const response = await axios.post('http://localhost:5000/loadTaskById', {
-          taskId: taskId,
-        });
-        console.log('Task details fetched successfully:', response.data);
-        setTask(response.data);
+        // Dispatch the loadUserById action
+        const result = await dispatch(loadUserById(userId))
+        const userData = result.payload // Extract the payload containing the user data
+        console.log('User Data:', userData) // Debugging log
+        setUser(userData) // Update the user state with the fetched user data
       } catch (error) {
         console.error('Error fetching task details:', error);
       }
@@ -55,6 +55,11 @@ const Task = ({ task }) => {
   useEffect(() => {
     setCurrentTask(task || {});
   }, [task]);
+
+  // Log the user state whenever it changes
+  useEffect(() => {
+    console.log('User State:', user) // Debugging log
+  }, [user])
 
   const handleToggleTaskStatus = () => {
     if (task.status === 'inProgress' && task.deliverables.length === 0) {
