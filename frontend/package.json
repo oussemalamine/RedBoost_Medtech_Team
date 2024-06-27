@@ -48,6 +48,7 @@
     "react-avatar-editor": "^13.0.2",
     "react-big-calendar": "^1.11.6",
     "react-bootstrap": "^2.10.2",
+    "react-calendar": "^5.0.0",
     "react-chartjs-2": "^5.2.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.51.3",

@@ -162,6 +162,7 @@ app.post("/forget-password", forgetPassword);
 app.get("/login", checkAuthRoute);
 app.get("/logout", logoutRoute);
 app.post("/loadCurrentUser", usersRoute);
+app.post("/loadUserById", usersRoute);
 app.post("/loadUsers", usersRoute);
 app.get("/checkPass", checkPass);
 app.get("/events", getEvents);
@@ -183,13 +184,15 @@ app.post("/createntrepreneurs", hundleEntrepreneur);
 app.post("/createstartup", handleStartups);
 app.get("/loadAllentrepreneurs", hundleEntrepreneur);
 app.post("/addTask", handleTask);
-app.post("/loadTask/:taskId", handleTask);
+app.post("/loadTaskById", handleTask);
 app.delete("/deleteTask/:taskId", handleTask);
 app.put("/updateTask/:taskId", handleTask);
 app.post("/loadTasks", handleTask);
 app.post("/loadTasksByActivityId/:activityId", handleTask);
 app.post("/tasksByUser", handleTask);  // Register the new route
 app.get("/sessions", sessionsRoute);
+app.delete("/deleteEntrepreneur/:id",hundleEntrepreneur)
+app.put("/updateEntrepreneur/:id",hundleEntrepreneur)
 
 // The "catchall" handler: for any request that doesn't match one above, send back index.html
 app.get("*", (req, res) => {

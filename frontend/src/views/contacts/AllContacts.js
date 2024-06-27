@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { FaUser } from 'react-icons/fa';
-import { CContainer, CCard, CCardBody, CCardHeader, CCol, CFormInput, CRow, CButton, CTable, CTableHead, CTableBody, CTableHeaderCell, CTableDataCell } from '@coreui/react';
+
+import { CContainer, CCard, CCardBody, CCardHeader, CCol, CFormInput, CRow, CButton, CTable, CTableHead, CTableBody, CTableHeaderCell, CTableDataCell, CTableRow } from '@coreui/react';
 import { FcContacts } from "react-icons/fc";
-import AdvancedFilter from './AdvancedFilter';
+
 
 const AllContacts = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -14,8 +14,8 @@ const AllContacts = () => {
   useEffect(() => {
     // Filtering common properties for all types of contacts
     const filtered = allContacts.filter(contact =>
-      contact.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      contact.email.toLowerCase().includes(searchTerm.toLowerCase())
+      (contact.name && contact.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (contact.email && contact.email.toLowerCase().includes(searchTerm.toLowerCase()))
     );
     setFilteredContacts(filtered);
   }, [allContacts, searchTerm]);
@@ -61,6 +61,7 @@ const AllContacts = () => {
         <CCardBody>
           <CTable striped responsive>
             <CTableHead>
+              <tr>
               <CTableHeaderCell>Name</CTableHeaderCell>
               <CTableHeaderCell>Last Name</CTableHeaderCell>
               <CTableHeaderCell>Phone Number</CTableHeaderCell>
@@ -68,23 +69,25 @@ const AllContacts = () => {
               <CTableHeaderCell>Gender</CTableHeaderCell>
               <CTableHeaderCell>Email</CTableHeaderCell>
               <CTableHeaderCell>Action</CTableHeaderCell>
+              </tr>
             </CTableHead>
             <CTableBody>
               {filteredContacts.map(contact => (
-                <tr key={contact.id}>
-                  <CTableDataCell>{contact.name}</CTableDataCell>
-                  <CTableDataCell>{contact.lastName}</CTableDataCell>
-                  <CTableDataCell>{contact.phoneNumber}</CTableDataCell>
-                  <CTableDataCell>{contact.role}</CTableDataCell>
-                  <CTableDataCell>{contact.gender}</CTableDataCell>
-                  <CTableDataCell>{contact.email}</CTableDataCell>
-                  <CTableDataCell>
-                    <Link to={`/profile/${contact.id}`}>
-                      <CButton color="primary">View Profile</CButton>
-                    </Link>
-                  </CTableDataCell>
-                </tr>
-              ))}
+              <CTableRow key={contact.id}>
+              <CTableDataCell>{contact.nom}</CTableDataCell>
+              <CTableDataCell>{contact.prenom}</CTableDataCell>
+              <CTableDataCell>{contact.adresse}</CTableDataCell>
+              <CTableDataCell>{contact.dateDeNaissance}</CTableDataCell>
+              <CTableDataCell>{contact.gender}</CTableDataCell>
+              <CTableDataCell>{contact.email}</CTableDataCell>
+              <CTableDataCell>
+              <Link to={`/profile/${contact.id}`}>
+                <CButton color="primary">View Profile</CButton>
+              </Link>
+            </CTableDataCell>
+          </CTableRow>
+            ))}
+
             </CTableBody>
           </CTable>
         </CCardBody>
