@@ -46,7 +46,10 @@ const Task = ({ task }) => {
     const fetchUser = async (userId) => {
       try {
         // Dispatch the loadUserById action
-        const userData = await dispatch(loadUserById(userId))
+
+        const result = await dispatch(loadUserById(userId))
+        const userData = result.payload // Extract the payload containing the user data
+
         console.log('User Data:', userData) // Debugging log
         setUser(userData) // Update the user state with the fetched user data
       } catch (error) {
@@ -60,6 +63,11 @@ const Task = ({ task }) => {
       fetchUser(task.taskOwner)
     }
   }, [task.taskOwner, currentTask, dispatch])
+
+  // Log the user state whenever it changes
+  useEffect(() => {
+    console.log('User State:', user) // Debugging log
+  }, [user])
 
   const handleToggleTaskStatus = () => {
     if (task.status === 'inProgress' && task.deliverables.length === 0) {

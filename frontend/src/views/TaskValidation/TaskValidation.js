@@ -215,7 +215,7 @@ const TaskValidation = () => {
             <CTableHead>
               <CTableRow>
                 <CTableDataCell onClick={() => handleSort('taskName')}>
-                  Task {sortBy === 'taskName' && renderSortIcon('taskName')}
+                  Task Name {sortBy === 'taskName' && renderSortIcon('taskName')}
                 </CTableDataCell>
                 <CTableDataCell onClick={() => handleSort('username')}>
                   Team Member {sortBy === 'username' && renderSortIcon('username')}
@@ -238,6 +238,14 @@ const TaskValidation = () => {
                 return (
                   <CTableRow key={index}>
                     <CTableDataCell>{task.taskName}</CTableDataCell>
+                    <CTableDataCell>
+                    <img
+                      src={user?.image ? user.image : userImg}
+                      alt="avatar 1"
+                      style={{ width: '45px', height: 'auto',borderRadius: '50%' }}
+                    />
+                    <span className="ms-2">{user?.username}</span>
+                  </CTableDataCell>
                     <CTableDataCell>
                       <span className="ms-2">{user?.username}</span>
                     </CTableDataCell>

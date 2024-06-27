@@ -22,12 +22,14 @@ import { IoClose } from 'react-icons/io5'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import axios from 'axios'
+import { loadUserById } from '../../app/features/users/usersSlice'
 
 const TaskDetails = () => {
   const { taskId } = useParams()
   const [task, setTask] = useState(null)
   const dispatch = useDispatch()
   const [currentTask, setCurrentTask] = useState(task || {})
+  const [user, setUser] = useState(null) // State for user data
   const [newKpiLabel, setNewKpiLabel] = useState('')
   const [newKpiValue, setNewKpiValue] = useState('')
   const [newDeliverableName, setNewDeliverableName] = useState('')
@@ -56,9 +58,32 @@ const TaskDetails = () => {
     fetchTask()
   }, [taskId])
 
+  useEffect(() => {
+    const fetchUser = async (userId) => {
+      try {
+        const result = await dispatch(loadUserById(userId))
+        const userData = result.payload
+        console.log('User Data:', userData)
+        setUser(userData)
+      } catch (error) {
+        console.error('Error fetching user:', error)
+      }
+    }
+
+    if (task && task.taskOwner) {
+      console.log('Fetching user data for task owner:', task.taskOwner)
+      fetchUser(task.taskOwner)
+    }
+  }, [task, dispatch])
+
+  useEffect(() => {
+    console.log('User State:', user) // Log user state changes
+  }, [user])
+
   if (!task) {
     return <div>Loading...</div>
   }
+
   const handleToggleTaskStatus = () => {
     if (task.status === 'inProgress' && task.deliverables.length === 0) {
       alert('Please add a deliverable before changing the status')
@@ -214,6 +239,7 @@ const TaskDetails = () => {
     }
     return '' // Fallback for invalid date
   }
+
   return (
     <>
       <ToastContainer />
@@ -231,7 +257,7 @@ const TaskDetails = () => {
                     <strong>Task Name:</strong> {currentTask.taskName}
                   </p>
                   <p className="card-text">
-                    <strong>Task Owner:</strong> {currentTask.taskOwner}
+                    <strong>Task Owner:</strong> {user ? user.username || 'Unknown' : 'Loading...'}
                   </p>
                   <p className="card-text">
                     <strong>Target Date:</strong>{' '}

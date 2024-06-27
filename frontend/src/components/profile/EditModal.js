@@ -16,12 +16,12 @@ import axiosInstance from '../../axiosInstance';
 import { useSelector, useDispatch } from 'react-redux';
 import { setUserData } from '../../app/features/userData/userData';
 
-const EditProfileModal = async ({ setUpdateLog, isOpen, setIsOpen }) => {{
-  
+const EditModal = ({ setUpdateLog, isOpen, setIsOpen }) => {
   const [editedData, setEditedData] = useState({});
   const user = useSelector((state) => state.userData.userData);
   const dispatch = useDispatch();
 
+  const handleConfirm = async () => {
     try {
       const updatedData = { ...user, ...editedData };
       const response = await axiosInstance.put(`/users/${user._id}`, updatedData);
@@ -114,4 +114,4 @@ const EditProfileModal = async ({ setUpdateLog, isOpen, setIsOpen }) => {{
   );
 };
 
-export default EditProfileModal;
+export default EditModal;
