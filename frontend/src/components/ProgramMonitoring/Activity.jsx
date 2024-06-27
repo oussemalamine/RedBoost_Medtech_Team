@@ -129,7 +129,7 @@ function Activity({ activity, tasks }) {
 
   const handleViewTask = (task) => {
     const currentPath = window.location.pathname;
-    navigate(`${currentPath}/${task.taskName}`);
+    navigate(`${currentPath}/${task._id}`);
   };
 
   const TaskStatusCard = ({ status, tasks, color }) => {
