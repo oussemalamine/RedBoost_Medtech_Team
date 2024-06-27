@@ -16,7 +16,7 @@ const ActivityRoutes = ({ program }) => {
         dispatch(
           addRoutes(
             result.payload.map((activity) => ({
-              path: `/Monitoring/${encodeURIComponent(program.programTitle)}/${encodeURIComponent(activity.name)}`,
+              path: `/Monitoring/${encodeURIComponent(program._id)}/${encodeURIComponent(activity._id)}`,
               name: activity.name,
               activityId: activity._id,
             })),
@@ -32,7 +32,7 @@ const ActivityRoutes = ({ program }) => {
       {activities.map((activity) => (
         <Route
           key={activity._id}
-          path={`${activity.name}/*`}
+          path={`${activity._id}/*`}
           element={<TaskRoutes activity={activity} />}
         />
       ))}

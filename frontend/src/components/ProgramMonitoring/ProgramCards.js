@@ -238,7 +238,7 @@ export default function ProgramCards() {
                 <ProgramCard
                   logo={program.logo}
                   title={program.programTitle}
-                  path={`${window.location.pathname}/${program.programTitle}`}
+                  path={`${window.location.pathname}/${program._id}`}
                 />
               </CCol>
             ))}
