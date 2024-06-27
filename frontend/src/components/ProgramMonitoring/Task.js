@@ -250,8 +250,8 @@ const Task = ({ task }) => {
 
                   <p className="card-text">
                     <strong>Target Date:</strong>{' '}
-                    {currentTask.targetDate
-                      ? formatDate(currentTask.targetDate)
+                    {currentTask.endDate
+                      ? formatDate(currentTask.endDate)
                       : 'No target date set'}
                   </p>
 
