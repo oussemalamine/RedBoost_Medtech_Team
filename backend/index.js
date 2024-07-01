@@ -17,7 +17,7 @@ const db = process.env.DATABASE_URI;
 const secret = process.env.SECRET;
 const PORT = process.env.PORT || 5000;
 const app = express();
-
+const nodemailer = require('nodemailer');
 // Cloudinary configuration
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -46,6 +46,7 @@ const hundleEntrepreneur = require("./routes/api/hundleEntrepreneur");
 const handleStartups = require("./routes/api/handleStartups");
 const handleTask = require("./routes/api/handleTask");
 const sessionsRoute = require("./routes/api/Sessions");
+const emailRouter = require("./routes/api/emailRouter")
 require("./passport/index");
 
 // Increase payload size limit for body-parser
@@ -186,7 +187,7 @@ app.put("/updateEntrepreneur/:id",hundleEntrepreneur)
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "../frontend/build", "index.html"));
 });
-
+app.post("/sendEmail",emailRouter)
 // Global error handler
 app.use((err, req, res, next) => {
   console.error(err.stack);
