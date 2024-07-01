@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Button,
   Modal,
@@ -21,13 +21,18 @@ const EditModal = ({ setUpdateLog, isOpen, setIsOpen }) => {
   const user = useSelector((state) => state.userData.userData);
   const dispatch = useDispatch();
 
+  useEffect(() => {
+    if (isOpen) {
+      setEditedData({});
+    }
+  }, [isOpen]);
+
   const handleConfirm = async () => {
     try {
       const updatedData = { ...user, ...editedData };
       const response = await axiosInstance.put(`/users/${user._id}`, updatedData);
 
       if (response.status === 200) {
-        console.log('User updated successfully:', response.data);
         const currentDate = new Date().toLocaleDateString();
         const updatedLogs = [
           ...user.logs,
