@@ -463,15 +463,262 @@ export default function EmailForm() {
         break;
     }
   };
-  
-
   const handleTemplateContentChange = (key, value) => {
     setTemplateContent((prevContent) => ({
       ...prevContent,
       [key]: value,
     }));
   };
-   
+
+  const generateTemplateHTML = (selectedTemplate, templateContent) => {
+    switch (selectedTemplate) {
+      case 'Template1':
+        return `
+          <table
+            align="center"
+            role="presentation"
+            border="0"
+            cellSpacing="0"
+            cellPadding="0"
+            width="100%"
+            style="max-width: 600px; margin: auto; font-family: Arial, sans-serif; background-color: #ffffff; border-radius: 8px; padding: 20px; box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);"
+          >
+            <tbody>
+              <tr>
+                <td style="color: #333; font-size: 16px; line-height: 1.6;">
+                  <div style="margin-bottom: 20px;">
+                    <img src="${templateContent.image1}" alt="Featured Article" style="max-width: 100%; border-radius: 8px;" />
+                    <h3 style="font-size: 20px; margin-bottom: 10px;">${templateContent.title1}</h3>
+                    <p style="margin-bottom: 10px;">${templateContent.firstParagraph}</p>
+                    <a href="${templateContent.firstButtonLink}" style="color: #007bff; text-decoration: none;">${templateContent.firstButton}</a>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td align="center" style="padding: 0 20px;">
+                  <div style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;">
+                    <div style="flex: 1; padding-right: 10px; text-align: left;">
+                      <h2 style="color: #333; font-size: 24px; margin-bottom: 10px;">${templateContent.title2}</h2>
+                      <p style="color: #666; font-size: 16px; line-height: 1.6; margin-bottom: 20px;">${templateContent.SecondParagraph}</p>
+                    </div>
+                    <div style="flex: 1; padding-left: 10px; text-align: center;">
+                      <img src="${templateContent.image2}" alt="Picture 1" style="max-width: 100%; border-radius: 8px;" />
+                    </div>
+                  </div>
+                  <hr style="border: none; border-bottom: 1px solid #ddd; margin: 20px 0; max-width: 80%;" />
+                  <tr>
+                    <td align="center">
+                      <h2 style="color: #333; font-size: 24px; margin-bottom: 10px;">${templateContent.title3}</h2>
+                      <p style="color: #666; font-size: 16px; line-height: 1.6; margin-bottom: 20px;">${templateContent.thirdParagraph}</p>
+                      <hr style="border: none; border-bottom: 1px solid #ddd; margin: 20px auto; max-width: 80%;" />
+                    </td>
+                  </tr>
+                  <hr style="border: none; border-bottom: 1px solid #ddd; margin: 20px 0; max-width: 80%;" />
+                  <p style="color: #666; font-size: 14px; line-height: 1.6; margin-bottom: 20px;">
+                    Regards,<br />Redstart
+                  </p>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        `;
+      
+      case 'Template2':
+        return `
+          <table
+            align="center"
+            role="presentation"
+            border="0"
+            cellSpacing="0"
+            cellPadding="0"
+            width="100%"
+            style="max-width: 600px; margin: auto; font-family: Arial, sans-serif; background-color: #ffffff; border-radius: 8px; padding: 20px; box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);"
+          >
+            <tbody>
+              <tr>
+                <td align="center">
+                  <img src="${templateContent.logo}" alt="Logo" style="max-width: 100%; margin-bottom: 10px;" />
+                  <h2 style="color: #333; font-size: 24px; margin-bottom: 10px;">Redstart Tunisie</h2>
+                  <p style="color: #666; font-size: 16px; line-height: 1.6; margin-bottom: 20px;">
+                    slogen1 bird fathers and life is good
+                  </p>
+                  <hr style="border: none; border-bottom: 1px solid #ddd; margin: 20px auto; max-width: 80%;" />
+                </td>
+              </tr>
+              <tr>
+                <td style="color: #333; font-size: 16px; line-height: 1.6;">
+                  <div style="margin-bottom: 20px;">
+                    <img src="${templateContent.image1}" alt="Featured Article" style="max-width: 100%; border-radius: 8px;" />
+                    <h3 style="font-size: 20px; margin-bottom: 10px;">${templateContent.title}</h3>
+                    <p style="margin-bottom: 10px;">${templateContent.firstParagraph}</p>
+                    <a href="${templateContent.firstButtonLink}" style="color: #007bff; text-decoration: none;">${templateContent.firstButton}</a>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td align="center" style="padding: 0 20px;">
+                  <div style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;">
+                    <div style="flex: 1; padding-right: 10px; text-align: left;">
+                      <h2 style="color: #333; font-size: 24px; margin-bottom: 10px;">${templateContent.title2}</h2>
+                      <p style="color: #666; font-size: 16px; line-height: 1.6; margin-bottom: 20px;">
+                        ${templateContent.SecondParagraph}
+                      </p>
+                    </div>
+                    <div style="flex: 1; padding-left: 10px; text-align: center;">
+                      <img src="${templateContent.image2}" alt="Picture 1" style="max-width: 100%; border-radius: 8px;" />
+                    </div>
+                  </div>
+                  <div style="display: flex; flex-direction: row; justify-content: space-between; align-items: center; margin-top: 20px;">
+                    <div style="flex: 1; padding-right: 10px; text-align: center;">
+                      <img src="${templateContent.image3}" alt="Picture 2" style="max-width: 100%; border-radius: 8px;" />
+                    </div>
+                    <div style="flex: 1; padding-left: 10px; text-align: left;">
+                      <p style="color: #666; font-size: 16px; line-height: 1.6; margin-bottom: 20px;">
+                        ${templateContent.thirdParagraph}
+                      </p>
+                    </div>
+                  </div>
+                  <hr style="border: none; border-bottom: 1px solid #ddd; margin: 20px 0; max-width: 80%;" />
+                  <hr style="border: none; border-bottom: 1px solid #ddd; margin: 20px 0; max-width: 80%;" />
+                  <p style="color: #666; font-size: 14px; line-height: 1.6; margin-bottom: 20px;">
+                    Regards,<br />Redstart
+                  </p>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        `;
+        case 'Template3':
+          return `
+            <table
+              align="center"
+              role="presentation"
+              border="0"
+              cellSpacing="0"
+              cellPadding="0"
+              width="100%"
+              style="max-width: 600px; margin: auto; font-family: Arial, sans-serif; background-color: #ffffff; border-radius: 8px; padding: 20px; box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);"
+            >
+              <tbody>
+                <tr>
+                  <td align="center">
+                    <img src="${templateContent.logo}" alt="Logo" style="max-width: 100%; margin-bottom: 10px;" />
+                    <h2 style="color: #333; font-size: 24px; margin-bottom: 10px;">Redstart Tunisie</h2>
+                    <p style="color: #666; font-size: 16px; line-height: 1.6; margin-bottom: 20px;">
+                      sden but amount paid.
+                    </p>
+                    <hr style="border: none; border-bottom: 1px solid #ddd; margin: 20px auto; max-width: 80%;" />
+                  </td>
+                </tr>
+                <tr>
+                  <td style="color: #333; font-size: 16px; line-height: 1.6;">
+                    <div style="margin-bottom: 20px;">
+                      <img src="${templateContent.image1}" alt="Featured Article" style="max-width: 100%; border-radius: 8px;" />
+                      <h3 style="font-size: 20px; margin-bottom: 10px;">${templateContent.title}</h3>
+                      <p style="margin-bottom: 10px;">${templateContent.firstParagraph}</p>
+                      <a href="${templateContent.firstButtonLink}" style="color: #007bff; text-decoration: none;">${templateContent.firstButton}</a>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td align="center" style="padding: 0 20px;">
+                    <div style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;">
+                      <div style="flex: 1; padding-right: 10px; text-align: left;">
+                        <h2 style="color: #333; font-size: 24px; margin-bottom: 10px;">${templateContent.title2}</h2>
+                        <p style="color: #666; font-size: 16px; line-height: 1.6; margin-bottom: 20px;">
+                          ${templateContent.SecondParagraph}
+                        </p>
+                      </div>
+                      <div style="flex: 1; padding-left: 10px; text-align: center;">
+                        <img src="${templateContent.image2}" alt="Picture 1" style="max-width: 100%; border-radius: 8px;" />
+                      </div>
+                    </div>
+                    <div style="display: flex; flex-direction: row; justify-content: space-between; align-items: center; margin-top: 20px;">
+                      <div style="flex: 1; padding-right: 10px; text-align: center;">
+                        <img src="${templateContent.image3}" alt="Picture 2" style="max-width: 100%; border-radius: 8px;" />
+                      </div>
+                      <div style="flex: 1; padding-left: 10px; text-align: left;">
+                        <p style="color: #666; font-size: 16px; line-height: 1.6; margin-bottom: 20px;">
+                          ${templateContent.thirdParagraph}
+                        </p>
+                      </div>
+                    </div>
+                    <hr style="border: none; border-bottom: 1px solid #ddd; margin: 20px 0; max-width: 80%;" />
+                    <p style="color: #666; font-size: 14px; line-height: 1.6; margin-bottom: 20px;">
+                      Regards,<br />Redstart
+                    </p>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          `;
+          case 'Template4':
+            return `
+              <table
+                align="center"
+                role="presentation"
+                border="0"
+                cellSpacing="0"
+                cellPadding="0"
+                width="100%"
+                style="max-width: 600px; margin: auto; font-family: Arial, sans-serif; background-color: #ffffff; border-radius: 8px; padding: 20px; box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);"
+              >
+                <tbody>
+                  <tr>
+                    <td align="center">
+                      <img src="${templateContent.logo}" alt="Logo" style="max-width: 100%; margin-bottom: 10px;" />
+                      <h2 style="color: #333; font-size: 24px; margin-bottom: 10px;">Redstart Tunisie</h2>
+                      <p style="color: #666; font-size: 16px; line-height: 1.6; margin-bottom: 20px;">
+                        sden but amount paid.
+                      </p>
+                      <hr style="border: none; border-bottom: 1px solid #ddd; margin: 20px auto; max-width: 80%;" />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="color: #333; font-size: 16px; line-height: 1.6;">
+                      <div style="margin-bottom: 20px;">
+                        <img src="${templateContent.image1}" alt="Featured Article" style="max-width: 100%; border-radius: 8px;" />
+                        <h3 style="font-size: 20px; margin-bottom: 10px;">${templateContent.title}</h3>
+                        <p style="margin-bottom: 10px;">${templateContent.firstParagraph}</p>
+                        <a href="${templateContent.firstButtonLink}" style="color: #007bff; text-decoration: none;">${templateContent.firstButton}</a>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td align="center" style="padding: 0 20px;">
+                      <div style="display: flex; flex-direction: row; justify-content: space-between; align-items: center;">
+                        <div style="flex: 1; padding-right: 10px; text-align: left;">
+                          <h2 style="color: #333; font-size: 24px; margin-bottom: 10px;">${templateContent.title2}</h2>
+                          <p style="color: #666; font-size: 16px; line-height: 1.6; margin-bottom: 20px;">
+                            ${templateContent.SecondParagraph}
+                          </p>
+                        </div>
+                        <div style="flex: 1; padding-left: 10px; text-align: center;">
+                          <img src="${templateContent.image2}" alt="Picture 1" style="max-width: 100%; border-radius: 8px;" />
+                        </div>
+                      </div>
+                      <div style="display: flex; flex-direction: row; justify-content: space-between; align-items: center; margin-top: 20px;">
+                        <div style="flex: 1; padding-right: 10px; text-align: center;">
+                          <img src="${templateContent.image3}" alt="Picture 2" style="max-width: 100%; border-radius: 8px;" />
+                        </div>
+                        <div style="flex: 1; padding-left: 10px; text-align: left;">
+                          <p style="color: #666; font-size: 16px; line-height: 1.6; margin-bottom: 20px;">
+                            ${templateContent.thirdParagraph}
+                          </p>
+                        </div>
+                      </div>
+                      <hr style="border: none; border-bottom: 1px solid #ddd; margin: 20px 0; max-width: 80%;" />
+                      <p style="color: #666; font-size: 14px; line-height: 1.6; margin-bottom: 20px;">
+                        Regards,<br />Redstart
+                      </p>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            `;
+    }};          
+        
+
   const handleSubmit = async (e) => {
     e.preventDefault();
    
