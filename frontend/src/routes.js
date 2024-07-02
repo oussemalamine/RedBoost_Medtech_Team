@@ -1,5 +1,6 @@
 import { element } from 'prop-types'
 import React from 'react'
+
 const EntrepreneursTable = React.lazy(() => import('./views/entrepeneur/entrepeneursTable'));
 const EntrepreneurDetails = React.lazy(() => import('./views/entrepeneur/entrepeneurDetails'));
 const CategoryMain = React.lazy(() => import('./views/category/categoryMain'));
@@ -21,7 +22,8 @@ const CreateContact = React.lazy(() => import('./views/contacts/CreateContact'))
 const Users = React.lazy(() => import('./views/users/users'))
 const TaskValidation = React.lazy(() => import('./views/TaskValidation/TaskValidation'))
 const StatisticsEntrepeneurs = React.lazy(() => import('./views/Statistics/EntrepreneurStat'))
-const ProgramsStatistics = React.lazy(() => import('./views/Statistics/ProgramsStatistics'))
+
+
 
 const routes = [
   { path: '/', exact: true, name: 'Home', element: Dashboard },
@@ -46,15 +48,21 @@ const routes = [
     name: 'StatisticsEntrepeneurs',
     element: StatisticsEntrepeneurs,
   },
-  { path: '/statistics/programs', name: 'StatisticsPrograms', element: ProgramsStatistics },
+  
   { path: '/entrepeneurs', name: 'Entrepeneurs', element: EntrepreneursTable },
   { path: '/entrepeneurs/:id', name: ' entrepeneur', element: EntrepreneurDetails},
   { path: '/category', name: ' categories', element: CategoryMain },
   { path: '/addCategory', name: 'category', element: AddCategoryPage },
+
   { path: '/Marketing', name: 'Marketing', element: MarketingDashboard },
   { path: '/EmailForm', name: 'Email', element: EmailForm },
   { path: '/SuggestedThemes', name: 'Email', element: ThemesScreen },
   {path:'/NewspaperComposer', name:'AI generated composer', element: newspaperComposer}
+
+  { path: '/users/:id', name: 'UserDetails', element: UserDetails },
+  { path: '/:taskId', name: 'TaskDetails', element: TaskDetails}
+
 ]
 
 export default routes
+

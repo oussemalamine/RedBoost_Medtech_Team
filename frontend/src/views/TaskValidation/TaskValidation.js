@@ -57,6 +57,7 @@ const TaskValidation = () => {
       dispatch(setUserData({ ...currentUser, exp: task.xpPoints + Number(currentUser.exp) }))
     }
   }
+  
 
   const getCompletedTasks = () => {
     return filterTasks.filter((task) => task.status === 'completed').length
@@ -126,7 +127,7 @@ const TaskValidation = () => {
           .includes(searchTermLowerCase) ||
         taskStatus.includes(searchTermLowerCase) ||
         task.xpPoints.toString().includes(searchTermLowerCase) ||
-        task.targetDate.includes(searchTermLowerCase)
+        task.endDate.includes(searchTermLowerCase)
       )
     }
   })
@@ -214,7 +215,7 @@ const TaskValidation = () => {
             <CTableHead>
               <CTableRow>
                 <CTableDataCell onClick={() => handleSort('taskName')}>
-                  Task {sortBy === 'taskName' && renderSortIcon('taskName')}
+                  Task Name {sortBy === 'taskName' && renderSortIcon('taskName')}
                 </CTableDataCell>
                 <CTableDataCell onClick={() => handleSort('username')}>
                   Team Member {sortBy === 'username' && renderSortIcon('username')}
@@ -225,8 +226,8 @@ const TaskValidation = () => {
                 <CTableDataCell onClick={() => handleSort('xpPoints')}>
                   Points {sortBy === 'xpPoints' && renderSortIcon('xpPoints')}
                 </CTableDataCell>
-                <CTableDataCell onClick={() => handleSort('targetDate')}>
-                  Release Date {sortBy === 'targetDate' && renderSortIcon('targetDate')}
+                <CTableDataCell onClick={() => handleSort('endDate')}>
+                  Release Date {sortBy === 'endDate' && renderSortIcon('endDate')}
                 </CTableDataCell>
                 <CTableDataCell>Actions</CTableDataCell>
               </CTableRow>
@@ -238,6 +239,14 @@ const TaskValidation = () => {
                   <CTableRow key={index}>
                     <CTableDataCell>{task.taskName}</CTableDataCell>
                     <CTableDataCell>
+                    <img
+                      src={user?.image ? user.image : userImg}
+                      alt="avatar 1"
+                      style={{ width: '45px', height: 'auto',borderRadius: '50%' }}
+                    />
+                    <span className="ms-2">{user?.username}</span>
+                  </CTableDataCell>
+                    <CTableDataCell>
                       <span className="ms-2">{user?.username}</span>
                     </CTableDataCell>
                     <CTableDataCell>
@@ -245,7 +254,7 @@ const TaskValidation = () => {
                     </CTableDataCell>
                     <CTableDataCell>{task.xpPoints}XP</CTableDataCell>
                     <CTableDataCell>
-                      {new Date(task.targetDate).toLocaleDateString()}
+                      {new Date(task.endDate).toLocaleDateString()}
                     </CTableDataCell>
                     <CTableDataCell>
                       {task.status !== 'valid' && (

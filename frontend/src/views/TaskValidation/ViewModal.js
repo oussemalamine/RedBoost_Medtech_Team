@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import {
   CModal,
   CModalHeader,
@@ -8,47 +8,60 @@ import {
   CButton,
   CFormInput,
   CFormSelect,
-} from '@coreui/react'
-import { useDispatch } from 'react-redux'
-import { deleteTask, updateTask,loadTask } from '../../app/features/task/taskSlice'
+} from '@coreui/react';
+import { useDispatch, useSelector } from 'react-redux';
+import { deleteTask, updateTask } from '../../app/features/task/taskSlice';
+import { updateUser } from '../../app/features/users/usersSlice';
+import { setUserData } from '../../app/features/userData/userData';
 
 function ViewModal({ showModal, setShowModal, selectedTask, setSelectedTask }) {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
+  const users = useSelector((state) => state.usersSlice.users);
+  const currentUser = useSelector((state) => state.userData.userData);
 
   const handleChange = (e) => {
-    const { name, value } = e.target
-    const updatedTask = { ...selectedTask, [name]: value }
-    setSelectedTask(updatedTask)
+    const { name, value } = e.target;
+    const updatedTask = { ...selectedTask, [name]: value };
+    setSelectedTask(updatedTask);
+  };
+
+  const handleTaskDone = (task) => {
+    const user = users.find((user) => user._id === task.taskOwner)
+    dispatch(updateTask({ taskId: task._id, taskData: { ...task, status: 'valid' } }))
+    dispatch(
+      updateUser({ userId: task.taskOwner, userData: { exp: task.xpPoints + Number(user.exp) } }),
+    )
+    if (task.taskOwner === currentUser._id) {
+      dispatch(setUserData({ ...currentUser, exp: task.xpPoints + Number(currentUser.exp) }))
+    }
   }
 
   const handleSubmit = () => {
-    const { _id, ...taskData } = selectedTask
-    dispatch(updateTask({ taskId: _id, taskData }))
-    setShowModal(false)
-  }
+    const { _id, ...taskData } = selectedTask;
+    dispatch(updateTask({ taskId: _id, taskData }));
+    setShowModal(false);
+  };
 
   const handleDelete = () => {
-    dispatch(deleteTask(selectedTask._id))
-    setShowModal(false)
-  }
+    dispatch(deleteTask(selectedTask._id));
+    setShowModal(false);
+  };
 
   const handleValidate = () => {
-    dispatch(
-      updateTask({ taskId: selectedTask._id, taskData: { ...selectedTask, status: 'valid' } }),
-    )
-    setShowModal(false)
-  }
+    handleTaskDone(selectedTask);
+    setShowModal(false);
+  };
 
   const isValidDate = (date) => {
-    return !isNaN(Date.parse(date))
-  }
+    return !isNaN(Date.parse(date));
+  };
 
   const formatDate = (date) => {
     if (isValidDate(date)) {
-      return new Date(date).toISOString().substring(0, 10)
+      return new Date(date).toISOString().substring(0, 10);
     }
-    return '' // Fallback for invalid date
-  }
+    return ''; // Fallback for invalid date
+  };
 
   return (
     <CModal
@@ -84,12 +97,11 @@ function ViewModal({ showModal, setShowModal, selectedTask, setSelectedTask }) {
             <option value="inProgress">In Progress</option>
             <option value="cancelled">Cancelled</option>
             <option value="completed">Completed</option>
-            <option value="valid">Validated</option>
           </CFormSelect>
         </div>
         <div className="mb-3">
           <CFormInput
-            value={formatDate(selectedTask.targetDate)}
+            value={formatDate(selectedTask.endDate)}
             type="date"
             name="targetDate"
             id="taskDate"
@@ -186,7 +198,7 @@ function ViewModal({ showModal, setShowModal, selectedTask, setSelectedTask }) {
         </CButton>
       </CModalFooter>
     </CModal>
-  )
+  );
 }
 
-export default ViewModal
+export default ViewModal;
