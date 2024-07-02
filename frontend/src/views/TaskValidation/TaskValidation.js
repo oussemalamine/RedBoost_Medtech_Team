@@ -238,7 +238,11 @@ const TaskValidation = () => {
                   <CTableRow key={index} onClick={() => handleViewTask(task)} style={{ cursor: 'pointer' }}>
                     <CTableDataCell>{task.taskName}</CTableDataCell>
                     <CTableDataCell>
-                       
+                      <img
+                        src={user?.image ? user.image : userImg}
+                        alt="avatar"
+                        style={{ width: '45px', height: 'auto', borderRadius: '50%' }}
+                      />
                       <span className="ms-2">{user?.username}</span>
                     </CTableDataCell>
                     <CTableDataCell>

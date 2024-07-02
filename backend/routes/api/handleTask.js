@@ -63,16 +63,15 @@ router.put("/updateTask/:taskId", async (req, res) => {
     const { taskId } = req.params;
     const updatedTaskData = req.body;
 
-    const task = await Task.findById(taskId);
+    const task = await Task.findByIdAndUpdate(taskId, updatedTaskData, { new: true });
+
     if (!task) {
       return res.status(404).json({ error: "Task not found" });
     }
 
     // Check if task status has changed
     if (updatedTaskData.status && updatedTaskData.status !== task.status) {
-      // Update task status in the database
-      task.status = updatedTaskData.status;
-      await task.save();
+      console.log(`Status changed for task ${task._id}: ${task.status} -> ${updatedTaskData.status}`);
 
       // Create notification for status change
       const newNotification = new Notification({
@@ -83,18 +82,10 @@ router.put("/updateTask/:taskId", async (req, res) => {
       });
       await newNotification.save();
 
-      console.log(`Notification created for task ${task._id}: ${newNotification}`);
-
-      // Respond with updated task
-      res.status(200).json(task);
-    } else {
-      // If status hasn't changed, simply update the task
-      const updatedTask = await Task.findByIdAndUpdate(taskId, updatedTaskData, { new: true });
-      if (!updatedTask) {
-        return res.status(404).json({ error: "Task not found" });
-      }
-      res.status(200).json(updatedTask);
+      console.log("Notification created:", newNotification);
     }
+
+    res.status(200).json(task);
   } catch (error) {
     console.error("Error updating task:", error);
     res.status(500).json({ error: "Internal server error" });

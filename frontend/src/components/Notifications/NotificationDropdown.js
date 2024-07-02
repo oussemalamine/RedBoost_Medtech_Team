@@ -36,8 +36,22 @@ const NotificationDropdown = () => {
   }, [currentUser]);
 
   const handleNotificationClick = (notification) => {
+    // Update notification as read locally
+    const updatedNotifications = notifications.map((notif) =>
+      notif._id === notification._id ? { ...notif, read: true } : notif
+    );
+    setNotifications(updatedNotifications);
+
+    // Optionally, update notification as read on the server
+    axios.put(`http://localhost:5000/${notification._id}`, { read: true })
+      .then((response) => {
+        console.log('Notification marked as read:', response.data);
+      })
+      .catch((error) => {
+        console.error('Error marking notification as read:', error);
+      });
+
     navigate(`/dash/${notification.taskId}`);
-    // Mark notification as read or update read status as needed
   };
 
   return (
@@ -53,7 +67,7 @@ const NotificationDropdown = () => {
           {notifications.filter((notif) => !notif.read).length}
         </CBadge>
       </CDropdownToggle>
-      <CDropdownMenu style={{ minWidth: '300px' }}>
+      <CDropdownMenu style={{ minWidth: '600px', maxWidth: '700px', maxHeight: '400px', overflowY: 'auto' }}>
         {notifications.length === 0 ? (
           <CDropdownItem disabled>
             No notifications
@@ -63,7 +77,7 @@ const NotificationDropdown = () => {
             <CDropdownItem
               key={notification._id}
               onClick={() => handleNotificationClick(notification)}
-              style={{ fontWeight: notification.read ? 'normal' : 'bold' }}
+              style={{ fontWeight: notification.read ? 'normal' : 'bold', whiteSpace: 'normal' }}
             >
               <div className="d-flex align-items-center">
                 {!notification.read && (
@@ -78,7 +92,7 @@ const NotificationDropdown = () => {
                   />
                 )}
                 <CAvatar
-                  src={notification.user}
+                  src={notification.actionUserAvatarUrl} // Assuming this is the URL of the user's avatar
                   size="md"
                   status="success"
                   className="me-3"
