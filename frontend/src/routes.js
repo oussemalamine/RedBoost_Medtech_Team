@@ -8,7 +8,7 @@ const AllContacts = React.lazy(() => import('./views/contacts/AllContacts'));
 const MarketingDashboard = React.lazy(() => import('./views/marketing/marketingDashboard'));
 const EmailForm = React.lazy(() => import('./views/marketing/emailForm'));
 const ThemesScreen = React.lazy(() => import('./views/marketing/themes/themesScreen'));
-
+const newspaperComposer =React.lazy(()=> import('./views/marketing/newspaper/newspaperComposer'))
 
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
 const Events = React.lazy(() => import('./components/Events/Events'))
@@ -54,6 +54,7 @@ const routes = [
   { path: '/Marketing', name: 'Marketing', element: MarketingDashboard },
   { path: '/EmailForm', name: 'Email', element: EmailForm },
   { path: '/SuggestedThemes', name: 'Email', element: ThemesScreen },
+  {path:'/NewspaperComposer', name:'AI generated composer', element: newspaperComposer}
 ]
 
 export default routes

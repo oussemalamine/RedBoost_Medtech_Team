@@ -14,7 +14,7 @@ import {
   CButton,
   CFormCheck,
 } from '@coreui/react';
-import EmailsPopUps from  './popouts/EmailsPopUps'
+import EmailsPopUps from  './popouts/EmailsPopUps';
 import axiosInstance from '../../axiosInstance';
 
 import { ToastContainer, toast } from 'react-toastify'; // Assuming you are using react-toastify for notifications
@@ -50,7 +50,6 @@ export default function EmailForm() {
      image2: 'https://via.placeholder.com/290x150'
      ,image3: 'https://via.placeholder.com/290x150'
   });
-
   const Template1 = () => (
     <table
       align="center"
@@ -118,7 +117,6 @@ export default function EmailForm() {
       </tbody>
     </table>
   );
-  
   const Template2 = () => (
     <table
       align="center"
@@ -209,7 +207,6 @@ export default function EmailForm() {
       </tbody>
     </table>
   );
-  
   const Template3 = () => (
     <table
       align="center"
@@ -295,7 +292,6 @@ export default function EmailForm() {
       </tbody>
     </table>
   );
-  
   const Template4 = () => (
     <table
       align="center"
@@ -382,9 +378,7 @@ export default function EmailForm() {
       </tbody>
     </table>
   );
-  
   const templates = [Template1, Template2, Template3, Template4];
-
   const handleTemplateSelect = (index) => {
     setSelectedTemplate(index);
     switch (index) {
@@ -469,7 +463,6 @@ export default function EmailForm() {
       [key]: value,
     }));
   };
-
   const generateTemplateHTML = (selectedTemplate, templateContent) => {
     switch (selectedTemplate) {
       case 'Template1':
@@ -716,30 +709,24 @@ export default function EmailForm() {
                 </tbody>
               </table>
             `;
-    }};          
-        
-
+    }};
   const handleSubmit = async (e) => {
     e.preventDefault();
    
     setValidated(true);
   };
-  
   // Function to handle the selection of recipients
   const handleRecipientsSelection = (selectedEmails) => {
     setRecipients(selectedEmails);
   };
-
   // Function to handle the selection of CC recipients
   const handleCcRecipientsSelection = (selectedEmails) => {
     setCcRecipients(selectedEmails);
   };
-
   // Function to open the pop-up
   const openRecipientsPopUp = () => {
     setPopUpVisible(true);
   };
-
   // Function to close the pop-up
   const closeRecipientsPopUp = () => {
     setPopUpVisible(false);
@@ -747,17 +734,14 @@ export default function EmailForm() {
   const openCCRecipientsPopUp = () => {
     setCCPopUpVisible(true);
   };
-
   // Function to close the pop-up
   const closeCCRecipientsPopUp = () => {
     setCCPopUpVisible(false);
   };
-
   let SelectedTemplateComponent = null;
   if (selectedTemplate !== null) {
     SelectedTemplateComponent = templates[selectedTemplate];
   }
-
   const handleFileChange = (event, fileType) => {
     const file = event.target.files[0];
     // Example of how you might handle different file types
@@ -789,8 +773,6 @@ export default function EmailForm() {
     }
   
   };
-
-
   return (
     <CRow>
       <CCol>
@@ -817,7 +799,6 @@ export default function EmailForm() {
                 </CFormFeedback>
               </CCol>
             </CRow>
-
             <CRow className="mb-3">
               <CCol>
                 <CFormLabel htmlFor="to">To</CFormLabel> <br/>
@@ -870,7 +851,6 @@ export default function EmailForm() {
             </CRow>
             <CRow className="mb-3">
               <CCol>
-                
                 <br/>
                 {selectedTemplate !== null && (
         <>
@@ -909,7 +889,6 @@ export default function EmailForm() {
             value={templateContent.firstButtonLink}
             onChange={(e) => handleTemplateContentChange('firstButtonLink', e.target.value)}
           />
-
           {/* Template-specific Inputs */}
           {selectedTemplate == 0 && (
             <>
@@ -921,7 +900,6 @@ export default function EmailForm() {
                 value={templateContent.title2}
                 onChange={(e) => handleTemplateContentChange('title2', e.target.value)}
               />
-
               <CFormLabel htmlFor="secondParagraph">Second Paragraph for Template 1</CFormLabel>
               <CFormTextarea
                 id="secondParagraph"
@@ -948,7 +926,6 @@ export default function EmailForm() {
               type='file'
               accept='image/*'
                 id="image1"
-               
                 onChange={(e) => handleFileChange(e,'image1')} 
                 />
               <CFormLabel htmlFor="image2">image2 for Template 1</CFormLabel>
@@ -960,7 +937,6 @@ export default function EmailForm() {
                 />
             </>
           )}
-
           {selectedTemplate ==1&& (
             <>
               <CFormLabel htmlFor="title2">Title 2 for Template 2</CFormLabel>
@@ -971,7 +947,6 @@ export default function EmailForm() {
                 value={templateContent.title2}
                 onChange={(e) => handleTemplateContentChange('title2', e.target.value)}
               />
-                
               <CFormLabel htmlFor="secondParagraph">Second Paragraph for Template 2</CFormLabel>
               <CFormTextarea
                 id="secondParagraph"
@@ -979,7 +954,6 @@ export default function EmailForm() {
                 value={templateContent.SecondParagraph}
                 onChange={(e) => handleTemplateContentChange('SecondParagraph', e.target.value)}
               />
-
               <CFormLabel htmlFor="thirdParagraph">paragraph  for Template 2</CFormLabel>
               <CFormTextarea
                 id="thirdParagraph"
@@ -987,37 +961,36 @@ export default function EmailForm() {
                 value={templateContent.thirdParagraph}
                 onChange={(e) => handleTemplateContentChange('thirdParagraph', e.target.value)}
                 />
-<CFormLabel htmlFor="image1">logo</CFormLabel>
-<CFormInput
-type='file'
-accept='image/*'
-  id="logo"
-  onChange={(e) => handleFileChange(e,'logo')} 
-  />
-<CFormLabel htmlFor="image1">image1</CFormLabel>
-<CFormInput
-type='file'
-accept='image/*'
-  id="image1"
-  onChange={(e) => handleFileChange(e,'image1')} 
-  />
-<CFormLabel htmlFor="image2">image2 </CFormLabel>
-<CFormInput
-type='file'
-accept='image/*'
-  id="image2"
-  onChange={(e) => handleFileChange(e,'image2')} 
-  />
-  <CFormLabel htmlFor="image2">image 3</CFormLabel>
-  <CFormInput
-  type='file'
-  accept='image/*'
-    id="image3"
-    onChange={(e) => handleFileChange(e,'image3')} 
-    />
+              <CFormLabel htmlFor="image1">logo</CFormLabel>
+                <CFormInput
+                  type='file'
+                  accept='image/*'
+                  id="logo"
+                  onChange={(e) => handleFileChange(e,'logo')} 
+                  />
+                <CFormLabel htmlFor="image1">image1</CFormLabel>
+                <CFormInput
+                  type='file'
+                  accept='image/*'
+                  id="image1"
+                  onChange={(e) => handleFileChange(e,'image1')} 
+                  />
+                <CFormLabel htmlFor="image2">image2 </CFormLabel>
+                <CFormInput
+                  type='file'
+                  accept='image/*'
+                  id="image2"
+                  onChange={(e) => handleFileChange(e,'image2')} 
+                />
+                <CFormLabel htmlFor="image2">image 3</CFormLabel>
+                <CFormInput
+                  type='file'
+                  accept='image/*'
+                  id="image3"
+                  onChange={(e) => handleFileChange(e,'image3')} 
+                />
             </>
           )}
-
           {selectedTemplate ==2 && (
             <>
               <CFormLabel htmlFor="title2">Title 2 for Template 3</CFormLabel>
@@ -1044,36 +1017,35 @@ accept='image/*'
                 onChange={(e) => handleTemplateContentChange('thirdParagraph', e.target.value)}
               />
               <CFormLabel htmlFor="image1">logo</CFormLabel>
-<CFormInput
-type='file'
-accept='image/*'
-  id="logo"
-  onChange={(e) => handleFileChange(e,'logo')} 
-  />
-<CFormLabel htmlFor="image1">image1</CFormLabel>
-<CFormInput
-type='file'
-accept='image/*'
-  id="image1"
-  onChange={(e) => handleFileChange(e,'image1')} 
-  />
-<CFormLabel htmlFor="image2">image2 </CFormLabel>
-<CFormInput
-type='file'
-accept='image/*'
-  id="image2"
-  onChange={(e) => handleFileChange(e,'image2')} 
-  />
-  <CFormLabel htmlFor="image2">image 3</CFormLabel>
-  <CFormInput
-  type='file'
-  accept='image/*'
-    id="image3"
-    onChange={(e) => handleFileChange(e,'image3')} 
-    />
+              <CFormInput
+              type='file'
+              accept='image/*'
+                id="logo"
+                onChange={(e) => handleFileChange(e,'logo')} 
+                />
+              <CFormLabel htmlFor="image1">image1</CFormLabel>
+              <CFormInput
+              type='file'
+              accept='image/*'
+                id="image1"
+                onChange={(e) => handleFileChange(e,'image1')} 
+                />
+              <CFormLabel htmlFor="image2">image2 </CFormLabel>
+              <CFormInput
+                type='file'
+                accept='image/*'
+                id="image2"
+                onChange={(e) => handleFileChange(e,'image2')} 
+              />
+              <CFormLabel htmlFor="image2">image 3</CFormLabel>
+              <CFormInput
+                type='file'
+                accept='image/*'
+                  id="image3"
+                  onChange={(e) => handleFileChange(e,'image3')} 
+              />
             </>
           )}
-
           {selectedTemplate ==3 && (
             <>
               <CFormLabel htmlFor="title2">Title 2 for Template 4</CFormLabel>
@@ -1104,15 +1076,11 @@ accept='image/*'
           )}
         </>
       )}
-
                 <CFormFeedback id="bodyFeedback" invalid>
                   Please enter a valid email body.
                 </CFormFeedback>
               </CCol>
             </CRow>
-
-            
-
             <CRow>
               <CCol>
                 <CButton color="primary" onClick={handleSubmit}>
@@ -1123,7 +1091,6 @@ accept='image/*'
           </CCardBody>
         </CCard>
       </CCol>
-
       <CCol>
         <CCard>
           <CCardHeader>
@@ -1133,8 +1100,6 @@ accept='image/*'
             {selectedTemplate !== null && (
               <SelectedTemplateComponent content={templateContent} />
             )}
-
-
           </CCardBody>
         </CCard>
         <EmailsPopUps
@@ -1142,7 +1107,6 @@ accept='image/*'
           onClose={closeRecipientsPopUp}
           onSave={handleRecipientsSelection}
         />
-
         {/* Pop-Up Component for selecting CC Recipients */}
         <EmailsPopUps
           visible={isCCPopUpVisible}
@@ -1152,6 +1116,5 @@ accept='image/*'
       </CCol>
       <ToastContainer />
     </CRow>
-  
 );
 }
