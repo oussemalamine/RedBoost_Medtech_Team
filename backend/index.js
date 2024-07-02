@@ -47,6 +47,7 @@ const hundleEntrepreneur = require("./routes/api/hundleEntrepreneur");
 const handleStartups = require("./routes/api/handleStartups");
 const handleTask = require("./routes/api/handleTask");
 const sessionsRoute = require("./routes/api/Sessions");
+const handleNotifications = require("./routes/api/handleNotifications");
 
 require("./passport/index");
 
@@ -191,8 +192,14 @@ app.post("/loadTasks", handleTask);
 app.post("/loadTasksByActivityId/:activityId", handleTask);
 app.post("/tasksByUser", handleTask);  // Register the new route
 app.get("/sessions", sessionsRoute);
-app.delete("/deleteEntrepreneur/:id",hundleEntrepreneur)
-app.put("/updateEntrepreneur/:id",hundleEntrepreneur)
+app.delete("/deleteEntrepreneur/:id",hundleEntrepreneur);
+app.put("/updateEntrepreneur/:id",hundleEntrepreneur);
+app.post("/createNotification",handleNotifications);
+app.get("/:userId",handleNotifications);
+app.put("/:notificationId",handleNotifications);
+app.delete("/:notificationId",handleNotifications);
+
+
 
 // The "catchall" handler: for any request that doesn't match one above, send back index.html
 app.get("*", (req, res) => {

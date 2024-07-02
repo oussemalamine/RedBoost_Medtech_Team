@@ -1,7 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const Task = require("../../database/models/TaskSchema");
+const Notification = require("../../database/models/NotifcationSchema");
 const Activity = require("../../database/models/ActivitySchema");
+const NotificationTemplates = require("../../database/models/NotificationTemplates");
+
 
 // Middleware to parse request body
 router.use(express.json());
@@ -14,7 +17,7 @@ router.post("/addTask", async (req, res) => {
       return res.status(400).json({ error: "Invalid task data" });
     }
 
-    const { activityId, ...taskData } = req.body;
+    const { activityId, taskOwner, ...taskData } = req.body;
 
     // Find the activity by its ID
     const activity = await Activity.findById(activityId);
@@ -23,10 +26,19 @@ router.post("/addTask", async (req, res) => {
     }
 
     // Create a new task instance and link it to the activity
-    const newTask = new Task({ ...taskData, activityId: activity._id });
+    const newTask = new Task({ ...taskData, activityId, taskOwner });
 
     // Save task to the database
     const savedTask = await newTask.save();
+
+    // Create notification using template for task assignment
+    const newNotification = new Notification({
+      userId: taskOwner,
+      taskId: savedTask._id,
+      title: NotificationTemplates.taskAssigned.title(savedTask.taskName),
+      text: NotificationTemplates.taskAssigned.text(savedTask.taskName, savedTask.endDate),
+    });
+    await newNotification.save();
 
     // Update the activity with the new task
     await Activity.findByIdAndUpdate(
@@ -44,22 +56,51 @@ router.post("/addTask", async (req, res) => {
   }
 });
 
+
 // Route to update a task
 router.put("/updateTask/:taskId", async (req, res) => {
   try {
     const { taskId } = req.params;
-    const taskData = req.body;
+    const updatedTaskData = req.body;
 
-    const task = await Task.findByIdAndUpdate(taskId, taskData, { new: true });
+    const task = await Task.findById(taskId);
     if (!task) {
       return res.status(404).json({ error: "Task not found" });
     }
-    res.status(200).json(task);
+
+    // Check if task status has changed
+    if (updatedTaskData.status && updatedTaskData.status !== task.status) {
+      // Update task status in the database
+      task.status = updatedTaskData.status;
+      await task.save();
+
+      // Create notification for status change
+      const newNotification = new Notification({
+        userId: task.taskOwner,
+        taskId: task._id,
+        title: NotificationTemplates.taskStatusChanged[updatedTaskData.status].title(task.taskName),
+        text: NotificationTemplates.taskStatusChanged[updatedTaskData.status].text(task.taskName),
+      });
+      await newNotification.save();
+
+      console.log(`Notification created for task ${task._id}: ${newNotification}`);
+
+      // Respond with updated task
+      res.status(200).json(task);
+    } else {
+      // If status hasn't changed, simply update the task
+      const updatedTask = await Task.findByIdAndUpdate(taskId, updatedTaskData, { new: true });
+      if (!updatedTask) {
+        return res.status(404).json({ error: "Task not found" });
+      }
+      res.status(200).json(updatedTask);
+    }
   } catch (error) {
     console.error("Error updating task:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 });
+
 
 // Route to load all tasks
 router.post("/loadTasks", async (req, res) => {

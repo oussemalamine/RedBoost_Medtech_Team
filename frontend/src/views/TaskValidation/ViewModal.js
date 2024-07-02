@@ -23,6 +23,12 @@ function ViewModal({ showModal, setShowModal, selectedTask, setSelectedTask }) {
     const { name, value } = e.target;
     const updatedTask = { ...selectedTask, [name]: value };
     setSelectedTask(updatedTask);
+  
+    // Optionally, you can check if the status field has changed here
+    if (name === 'status') {
+      // Handle status change detection, if necessary
+      // You can trigger a specific action or set a flag to indicate status change
+    }
   };
 
   const handleTaskDone = (task) => {

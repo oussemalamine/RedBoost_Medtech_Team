@@ -14,9 +14,9 @@ import {
 } from '@coreui/react'
 import { MdDone } from 'react-icons/md'
 import { HiMagnifyingGlassCircle } from 'react-icons/hi2'
+import { FaListCheck } from 'react-icons/fa6'
 import { Doughnut } from 'react-chartjs-2'
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js'
-import { FaListCheck } from 'react-icons/fa6'
 import ViewModal from './ViewModal'
 import { useDispatch, useSelector } from 'react-redux'
 import { loadTasks, updateTask } from '../../app/features/task/taskSlice'
@@ -57,7 +57,6 @@ const TaskValidation = () => {
       dispatch(setUserData({ ...currentUser, exp: task.xpPoints + Number(currentUser.exp) }))
     }
   }
-  
 
   const getCompletedTasks = () => {
     return filterTasks.filter((task) => task.status === 'completed').length
@@ -236,17 +235,10 @@ const TaskValidation = () => {
               {sortedTasks.map((task, index) => {
                 const user = users.find((user) => user._id === task.taskOwner)
                 return (
-                  <CTableRow key={index}>
+                  <CTableRow key={index} onClick={() => handleViewTask(task)} style={{ cursor: 'pointer' }}>
                     <CTableDataCell>{task.taskName}</CTableDataCell>
                     <CTableDataCell>
-                    <img
-                      src={user?.image ? user.image : userImg}
-                      alt="avatar 1"
-                      style={{ width: '45px', height: 'auto',borderRadius: '50%' }}
-                    />
-                    <span className="ms-2">{user?.username}</span>
-                  </CTableDataCell>
-                    <CTableDataCell>
+                       
                       <span className="ms-2">{user?.username}</span>
                     </CTableDataCell>
                     <CTableDataCell>
@@ -259,7 +251,10 @@ const TaskValidation = () => {
                     <CTableDataCell>
                       {task.status !== 'valid' && (
                         <MdDone
-                          onClick={() => handleTaskDone(task)}
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            handleTaskDone(task)
+                          }}
                           style={{
                             color: 'green',
                             fontSize: '25px',
@@ -269,7 +264,10 @@ const TaskValidation = () => {
                         />
                       )}
                       <HiMagnifyingGlassCircle
-                        onClick={() => handleViewTask(task)}
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          handleViewTask(task)
+                        }}
                         style={{ color: 'blue', fontSize: '25px', cursor: 'pointer' }}
                       />
                     </CTableDataCell>

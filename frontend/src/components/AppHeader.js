@@ -1,49 +1,42 @@
-import React, { useEffect, useRef } from 'react'
-import { NavLink } from 'react-router-dom'
-import { useSelector, useDispatch } from 'react-redux'
+import React, { useEffect, useRef } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import {
   CContainer,
-  CDropdown,
-  CDropdownItem,
-  CDropdownMenu,
-  CDropdownToggle,
   CHeader,
   CHeaderNav,
   CHeaderToggler,
+  CDropdown,
+  CDropdownToggle,
+  CDropdownItem,
+  CDropdownMenu,
   CNavLink,
   CNavItem,
   useColorModes,
-} from '@coreui/react'
-import CIcon from '@coreui/icons-react'
-import {
-  cilBell,
-  cilContrast,
-  cilEnvelopeOpen,
-  cilList,
-  cilMenu,
-  cilMoon,
-  cilSun,
-} from '@coreui/icons'
+} from '@coreui/react';
+import CIcon from '@coreui/icons-react';
+import { cilContrast, cilEnvelopeOpen, cilMenu, cilMoon, cilSun } from '@coreui/icons';
+import { AppBreadcrumb } from './index';
+import { AppHeaderDropdown } from './header/index';
+import { set } from '../app/features/appSlice/appSlice';
+import NotificationDropdown from './Notifications/NotificationDropdown';
 
-import { AppBreadcrumb } from './index'
-import { AppHeaderDropdown } from './header/index'
-import { set } from '../app/features/appSlice/appSlice'
 const AppHeader = ({ setIsLogged }) => {
-  const headerRef = useRef()
-  const { colorMode, setColorMode } = useColorModes('coreui-free-react-admin-template-theme')
+  const headerRef = useRef();
+  const { colorMode, setColorMode } = useColorModes('coreui-free-react-admin-template-theme');
+  const dispatch = useDispatch();
+  const sidebarShow = useSelector((state) => state.app.sidebarShow);
 
-  const dispatch = useDispatch()
-  const sidebarShow = useSelector((state) => state.app.sidebarShow)
   const handleToggleSidebar = () => {
-    dispatch(set({ sidebarShow: !sidebarShow }))
-  }
+    dispatch(set({ sidebarShow: !sidebarShow }));
+  };
 
   useEffect(() => {
     document.addEventListener('scroll', () => {
       headerRef.current &&
-        headerRef.current.classList.toggle('shadow-sm', document.documentElement.scrollTop > 0)
-    })
-  }, [])
+        headerRef.current.classList.toggle('shadow-sm', document.documentElement.scrollTop > 0);
+    });
+  }, []);
+
   return (
     <CHeader position="sticky" className="mb-4 p-0" ref={headerRef}>
       <CContainer className="border-bottom px-4" fluid>
@@ -51,13 +44,8 @@ const AppHeader = ({ setIsLogged }) => {
           <CIcon icon={cilMenu} size="lg" />
         </CHeaderToggler>
         <CHeaderNav className="d-none d-md-flex">
-          {/* <CNavItem>
-            <CNavLink to="/dashboard" as={NavLink}>
-              Dashboard
-            </CNavLink>
-          </CNavItem> */}
           <CNavItem>
-            <CNavLink to="/Dash/users" as={NavLink}>
+            <CNavLink to="/Dash/users" as={CNavLink}>
               Users
             </CNavLink>
           </CNavItem>
@@ -66,16 +54,7 @@ const AppHeader = ({ setIsLogged }) => {
           </CNavItem>
         </CHeaderNav>
         <CHeaderNav className="ms-auto">
-          <CNavItem>
-            <CNavLink href="#">
-              <CIcon icon={cilBell} size="lg" />
-            </CNavLink>
-          </CNavItem>
-          <CNavItem>
-            <CNavLink href="#">
-              <CIcon icon={cilList} size="lg" />
-            </CNavLink>
-          </CNavItem>
+          <NotificationDropdown />
           <CNavItem>
             <CNavLink href="#">
               <CIcon icon={cilEnvelopeOpen} size="lg" />
@@ -86,7 +65,7 @@ const AppHeader = ({ setIsLogged }) => {
           <li className="nav-item py-1">
             <div className="vr h-100 mx-2 text-body text-opacity-75"></div>
           </li>
-          <CDropdown variant="nav-item" placement="bottom-end">
+          <CDropdownMenu variant="nav-item" placement="bottom-end">
             <CDropdownToggle caret={false}>
               {colorMode === 'dark' ? (
                 <CIcon icon={cilMoon} size="lg" />
@@ -125,7 +104,7 @@ const AppHeader = ({ setIsLogged }) => {
                 <CIcon className="me-2" icon={cilContrast} size="lg" /> Auto
               </CDropdownItem>
             </CDropdownMenu>
-          </CDropdown>
+          </CDropdownMenu>
           <li className="nav-item py-1">
             <div className="vr h-100 mx-2 text-body text-opacity-75"></div>
           </li>
@@ -136,7 +115,7 @@ const AppHeader = ({ setIsLogged }) => {
         <AppBreadcrumb />
       </CContainer>
     </CHeader>
-  )
-}
+  );
+};
 
-export default AppHeader
+export default AppHeader;
