@@ -4,7 +4,7 @@ const Task = require("../../database/models/TaskSchema");
 const Notification = require("../../database/models/NotifcationSchema");
 const Activity = require("../../database/models/ActivitySchema");
 const NotificationTemplates = require("../../database/models/NotificationTemplates");
-
+const wss = require("../../websocket");
 
 // Middleware to parse request body
 router.use(express.json());
@@ -12,50 +12,39 @@ router.use(express.json());
 // Route to add a task
 router.post("/addTask", async (req, res) => {
   try {
-    // Validate incoming data
-    if (!req.body || Object.keys(req.body).length === 0) {
-      return res.status(400).json({ error: "Invalid task data" });
-    }
-
     const { activityId, taskOwner, ...taskData } = req.body;
 
-    // Find the activity by its ID
     const activity = await Activity.findById(activityId);
     if (!activity) {
       return res.status(404).json({ error: "Activity not found" });
     }
 
-    // Create a new task instance and link it to the activity
     const newTask = new Task({ ...taskData, activityId, taskOwner });
-
-    // Save task to the database
     const savedTask = await newTask.save();
 
-    // Create notification using template for task assignment
     const newNotification = new Notification({
       userId: taskOwner,
       taskId: savedTask._id,
       title: NotificationTemplates.taskAssigned.title(savedTask.taskName),
       text: NotificationTemplates.taskAssigned.text(savedTask.taskName, savedTask.endDate),
     });
-    await newNotification.save();
+    const savedNotification = await newNotification.save();
 
-    // Update the activity with the new task
+    // Convert the notification to a plain object before broadcasting
+    wss.broadcast(savedNotification.toObject());
+
     await Activity.findByIdAndUpdate(
       activityId,
       { $push: { tasks: savedTask._id } },
       { new: true, useFindAndModify: false }
     );
 
-    // Respond with data
     res.status(200).json(savedTask);
   } catch (error) {
-    // Handle errors
     console.error("Failed to create task:", error);
     res.status(500).json({ error: "Failed to create task" });
   }
 });
-
 
 // Route to update a task
 router.put("/updateTask/:taskId", async (req, res) => {
@@ -68,13 +57,10 @@ router.put("/updateTask/:taskId", async (req, res) => {
       return res.status(404).json({ error: "Task not found" });
     }
 
-    // Check if task status has changed
     if (updatedTaskData.status && updatedTaskData.status !== task.status) {
-      // Update task status in the database
       task.status = updatedTaskData.status;
       await task.save();
 
-      // Create notification for status change
       const newNotification = new Notification({
         userId: task.taskOwner,
         taskId: task._id,
@@ -83,12 +69,10 @@ router.put("/updateTask/:taskId", async (req, res) => {
       });
       await newNotification.save();
 
-      console.log(`Notification created for task ${task._id}: ${newNotification}`);
+      wss.broadcast(newNotification);
 
-      // Respond with updated task
       res.status(200).json(task);
     } else {
-      // If status hasn't changed, simply update the task
       const updatedTask = await Task.findByIdAndUpdate(taskId, updatedTaskData, { new: true });
       if (!updatedTask) {
         return res.status(404).json({ error: "Task not found" });

@@ -28,14 +28,14 @@ router.get("/:userId", async (req, res) => {
   try {
     const { userId } = req.params;
 
-    const notifications = await Notification.find({ userId });
-
+    const notifications = await Notification.find({ userId })
     res.status(200).json(notifications);
   } catch (error) {
     console.error("Error fetching notifications:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 });
+
 
 // Mark a notification as read
 router.put("/:notificationId", async (req, res) => {
@@ -78,7 +78,5 @@ router.delete("/:notificationId", async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
-
-
 
 module.exports = router;

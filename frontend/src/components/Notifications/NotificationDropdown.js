@@ -13,6 +13,9 @@ import { cilList } from '@coreui/icons';
 import CIcon from '@coreui/icons-react';
 import { useNavigate } from 'react-router-dom';
 import { formatDistanceToNow } from 'date-fns';
+import { toast } from 'react-toastify'; 
+import 'react-toastify/dist/ReactToastify.css'; 
+import notification_sound from '../../assets/notification-sounds.wav'; 
 
 const NotificationDropdown = () => {
   const [notifications, setNotifications] = useState([]);
@@ -21,23 +24,59 @@ const NotificationDropdown = () => {
 
   useEffect(() => {
     if (currentUser && currentUser._id) {
-      console.log('Fetching notifications for user ID:', currentUser._id);
-      axios.get(`http://localhost:5000/${currentUser._id}`)
+      axios.get(`http://localhost:5000/${currentUser._id}`) // Ensure this endpoint matches your backend
         .then((response) => {
-          console.log('Fetched notifications:', response.data);
-          // Sort notifications in reverse order (newest first)
           const sortedNotifications = response.data.reverse();
           setNotifications(sortedNotifications);
         })
         .catch((error) => {
           console.error('Error fetching notifications:', error);
         });
+  
+      const ws = new WebSocket('ws://localhost:5000'); // Ensure this matches your server port
+  
+      ws.onmessage = (event) => {
+        const notification = JSON.parse(event.data);
+        if (notification.userId === currentUser._id) {
+          const audio = new Audio(notification_sound); // Use imported notification sound
+          audio.play();
+          toast(notification.title, {
+            onClose: () => setNotifications((prev) => [notification, ...prev]),
+          });
+        }
+      };
+
+      ws.onclose = () => {
+        console.log('WebSocket closed. Reconnecting...');
+        setTimeout(() => {
+          // Reconnect on close
+          new WebSocket('ws://localhost:5000');
+        }, 1000);
+      };
+  
+      return () => {
+        ws.close();
+      };
     }
   }, [currentUser]);
 
   const handleNotificationClick = (notification) => {
+    // Update notification as read locally
+    const updatedNotifications = notifications.map((notif) =>
+      notif._id === notification._id ? { ...notif, read: true } : notif
+    );
+    setNotifications(updatedNotifications);
+
+    // Optionally, update notification as read on the server
+    axios.put(`http://localhost:5000/${notification._id}`, { read: true }) // Ensure this endpoint matches your backend
+      .then((response) => {
+        console.log('Notification marked as read:', response.data);
+      })
+      .catch((error) => {
+        console.error('Error marking notification as read:', error);
+      });
+
     navigate(`/dash/${notification.taskId}`);
-    // Mark notification as read or update read status as needed
   };
 
   return (
@@ -53,7 +92,7 @@ const NotificationDropdown = () => {
           {notifications.filter((notif) => !notif.read).length}
         </CBadge>
       </CDropdownToggle>
-      <CDropdownMenu style={{ minWidth: '300px' }}>
+      <CDropdownMenu style={{ minWidth: '600px', maxWidth: '700px', maxHeight: '400px', overflowY: 'auto' }}>
         {notifications.length === 0 ? (
           <CDropdownItem disabled>
             No notifications
@@ -63,7 +102,7 @@ const NotificationDropdown = () => {
             <CDropdownItem
               key={notification._id}
               onClick={() => handleNotificationClick(notification)}
-              style={{ fontWeight: notification.read ? 'normal' : 'bold' }}
+              style={{ fontWeight: notification.read ? 'normal' : 'bold', whiteSpace: 'normal' }}
             >
               <div className="d-flex align-items-center">
                 {!notification.read && (
@@ -78,7 +117,7 @@ const NotificationDropdown = () => {
                   />
                 )}
                 <CAvatar
-                  src={notification.user}
+                  src={notification.user} // Ensure this is the correct path to the user's avatar
                   size="md"
                   status="success"
                   className="me-3"
