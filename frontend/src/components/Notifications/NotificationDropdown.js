@@ -68,7 +68,9 @@ const NotificationDropdown = () => {
     setNotifications(updatedNotifications);
 
     // Optionally, update notification as read on the server
-    axios.put(`http://localhost:5000/${notification._id}`, { read: true }) // Ensure this endpoint matches your backend
+
+    axios.put(`http://localhost:5000/${notification._id}`, { read: true })
+
       .then((response) => {
         console.log('Notification marked as read:', response.data);
       })

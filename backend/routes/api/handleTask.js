@@ -52,12 +52,14 @@ router.put("/updateTask/:taskId", async (req, res) => {
     const { taskId } = req.params;
     const updatedTaskData = req.body;
 
-    const task = await Task.findById(taskId);
+    const task = await Task.findByIdAndUpdate(taskId, updatedTaskData, { new: true });
+
     if (!task) {
       return res.status(404).json({ error: "Task not found" });
     }
 
     if (updatedTaskData.status && updatedTaskData.status !== task.status) {
+
       task.status = updatedTaskData.status;
       await task.save();
 
@@ -69,6 +71,7 @@ router.put("/updateTask/:taskId", async (req, res) => {
       });
       await newNotification.save();
 
+
       wss.broadcast(newNotification);
 
       res.status(200).json(task);
@@ -78,7 +81,10 @@ router.put("/updateTask/:taskId", async (req, res) => {
         return res.status(404).json({ error: "Task not found" });
       }
       res.status(200).json(updatedTask);
+
     }
+
+    res.status(200).json(task);
   } catch (error) {
     console.error("Error updating task:", error);
     res.status(500).json({ error: "Internal server error" });
