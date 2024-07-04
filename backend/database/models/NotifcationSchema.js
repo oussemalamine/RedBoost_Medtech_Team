@@ -26,9 +26,6 @@ const notificationSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Task",
   },
-  actionUserAvatarUrl: {
-    type: String, // Field to store the avatar URL of the user who performed the action
-  },
 });
 
 module.exports = mongoose.model("Notification", notificationSchema);

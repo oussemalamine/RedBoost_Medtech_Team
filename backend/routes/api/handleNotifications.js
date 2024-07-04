@@ -1,30 +1,17 @@
 const express = require("express");
 const router = express.Router();
 const Notification = require("../../database/models/NotifcationSchema");
-const User = require("../../database/models/AdminSchema");
+
 
 // Create a notification
 router.post("/createNotification", async (req, res) => {
   try {
-    const { userId, taskId, title, text, actionUserId } = req.body;
-
-    // Fetch the user who performed the action
-    const actionUser = await User.findById(actionUserId);
-
-    if (!actionUser) {
-      return res.status(404).json({ error: "Action user not found" });
-    }
-
-    const actionUserAvatarUrl = actionUser.image?.data
-      ? `data:${actionUser.image.contentType};base64,${actionUser.image.data.toString('base64')}`
-      : ""; // Convert image data to base64 URL if available
-
+    const { userId, taskId, title, text } = req.body;
     const newNotification = new Notification({
       userId,
       title,
       text,
       taskId,
-      actionUserAvatarUrl,
     });
 
     const savedNotification = await newNotification.save();
