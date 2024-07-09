@@ -195,7 +195,7 @@ app.post("/tasksByUser", handleTask);  // Register the new route
 app.get("/sessions", sessionsRoute);
 app.delete("/deleteEntrepreneur/:id",hundleEntrepreneur)
 app.put("/updateEntrepreneur/:id",hundleEntrepreneur)
-
+app.get("/filterEntrepreneurs",hundleEntrepreneur);
 // The "catchall" handler: for any request that doesn't match one above, send back index.html
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "../frontend/build", "index.html"));

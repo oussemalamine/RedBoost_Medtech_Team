@@ -74,6 +74,25 @@ router.put('/updateEntrepreneur/:id', async (req, res) => {
   }
 });
 
+// Route to get filtered entrepreneurs' emails by gender and region
+router.get('/filterEntrepreneurs', async (req, res) => {
+  const { gender, region } = req.query;
+
+  try {
+    let query = {};
+    if (gender) query.gender = gender;
+    if (region) query.region = region;
+
+    const entrepreneurs = await Entrepreneur.find(query).select('email -_id');
+    const emails = entrepreneurs.map(entrepreneur => entrepreneur.email);
+
+    res.status(200).json(emails);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server Error' });
+  }
+});
+
 
 // Route to delete an entrepreneur by ID
 router.delete('/deleteEntrepreneur/:id', async (req, res) => {
@@ -88,6 +107,8 @@ router.delete('/deleteEntrepreneur/:id', async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
+
+
 });
 
 module.exports = router;

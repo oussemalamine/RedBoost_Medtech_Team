@@ -10,6 +10,8 @@ const MarketingDashboard = React.lazy(() => import('./views/marketing/marketingD
 const EmailForm = React.lazy(() => import('./views/marketing/emailForm'));
 const ThemesScreen = React.lazy(() => import('./views/marketing/themes/themesScreen'));
 const newspaperComposer =React.lazy(()=> import('./views/marketing/newspaper/newspaperComposer'))
+const TaskDetails = React.lazy(()=>import('./components/ProgramMonitoring/TaskDetails'))
+const UserDetails = React.lazy(()=>import('./views/dashboard/UserDetails'))
 
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
 const Events = React.lazy(() => import('./components/Events/Events'))
@@ -57,10 +59,11 @@ const routes = [
   { path: '/Marketing', name: 'Marketing', element: MarketingDashboard },
   { path: '/EmailForm', name: 'Email', element: EmailForm },
   { path: '/SuggestedThemes', name: 'Email', element: ThemesScreen },
-  {path:'/NewspaperComposer', name:'AI generated composer', element: newspaperComposer}
+  {path:'/NewspaperComposer', name:'AI generated composer', element: newspaperComposer},
 
   { path: '/users/:id', name: 'UserDetails', element: UserDetails },
-  { path: '/:taskId', name: 'TaskDetails', element: TaskDetails}
+  { path: '/:taskId', name: 'TaskDetails', element: TaskDetails},
+
 
 ]
 
