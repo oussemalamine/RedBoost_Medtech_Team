@@ -24,7 +24,7 @@ const CreateContact = React.lazy(() => import('./views/contacts/CreateContact'))
 const Users = React.lazy(() => import('./views/users/users'))
 const TaskValidation = React.lazy(() => import('./views/TaskValidation/TaskValidation'))
 const StatisticsEntrepeneurs = React.lazy(() => import('./views/Statistics/EntrepreneurStat'))
-
+const reportingScreen =React.lazy(()=> import('./views/reporting/reportingScreen'))
 
 
 const routes = [
@@ -63,7 +63,7 @@ const routes = [
 
   { path: '/users/:id', name: 'UserDetails', element: UserDetails },
   { path: '/:taskId', name: 'TaskDetails', element: TaskDetails},
-
+  {path:'/Reporting', name:'Reporting', element: reportingScreen}
 
 ]
 
