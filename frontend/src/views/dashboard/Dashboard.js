@@ -19,6 +19,7 @@ import CIcon from '@coreui/icons-react';
 import { cilPeople } from '@coreui/icons';
 import UserDetails from './UserDetails';
 import userAvatar from '../../components/Images/user.png';
+import WidgetsDropdown from '../widgets/WidgetsDropdown';
 import TaskCalendar from './TaskCalendar';
 import TaskList from './TaskList';
 
@@ -45,6 +46,7 @@ const Dashboard = () => {
         <UserDetails user={selectedUser} onBack={handleBack} />
       ) : (
         <>
+         <WidgetsDropdown users={users} className="mb-4" />
           <CRow>
             <CCol xs={6}>
               <CCard className="mb-4">

@@ -79,10 +79,15 @@ router.post("/loadTasks", async (req, res) => {
   }
 });
 
-//Route to load task by id
-router.post("/loadTask/:taskId", async (req, res) => {
+//Route to load a task by ID
+router.post("/loadTaskById", async (req, res) => {
   try {
-    const { taskId } = req.params;
+    const { taskId } = req.body; // Extract taskId from request body
+
+    if (!taskId) {
+      return res.status(400).json({ error: "Task ID is required" });
+    }
+
     // Find the Task by its ID
     const task = await Task.findById(taskId);
 
@@ -91,13 +96,14 @@ router.post("/loadTask/:taskId", async (req, res) => {
       return res.status(404).json({ error: "Task not found" });
     }
 
-    // Return success response
+    // Return success response with task data
     res.status(200).json(task);
   } catch (error) {
     console.error("Error loading task:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 });
+
 
 //Route to load tasks by activity id
 router.post("/loadTasksByActivityId/:activityId", async (req, res) => {

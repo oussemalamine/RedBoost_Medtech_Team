@@ -1,10 +1,17 @@
 import { element } from 'prop-types'
 import React from 'react'
-import EntrepreneursTable from './views/entrepeneur/entrepeneursTable'
-import entrepeneurDetails from './views/entrepeneur/entrepeneurDetails'
-import CategoryMain from './views/category/categoryMain'
-import AddCategoryPage from './views/category/addCategory'
-import AllContacts from './views/contacts/AllContacts'
+
+const EntrepreneursTable = React.lazy(() => import('./views/entrepeneur/entrepeneursTable'));
+const EntrepreneurDetails = React.lazy(() => import('./views/entrepeneur/entrepeneurDetails'));
+const CategoryMain = React.lazy(() => import('./views/category/categoryMain'));
+const AddCategoryPage = React.lazy(() => import('./views/category/addCategory'));
+const AllContacts = React.lazy(() => import('./views/contacts/AllContacts'));
+const MarketingDashboard = React.lazy(() => import('./views/marketing/marketingDashboard'));
+const EmailForm = React.lazy(() => import('./views/marketing/emailForm'));
+const ThemesScreen = React.lazy(() => import('./views/marketing/themes/themesScreen'));
+const newspaperComposer =React.lazy(()=> import('./views/marketing/newspaper/newspaperComposer'))
+const TaskDetails = React.lazy(()=>import('./components/ProgramMonitoring/TaskDetails'))
+const UserDetails = React.lazy(()=>import('./views/dashboard/UserDetails'))
 
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
 const Events = React.lazy(() => import('./components/Events/Events'))
@@ -17,7 +24,7 @@ const CreateContact = React.lazy(() => import('./views/contacts/CreateContact'))
 const Users = React.lazy(() => import('./views/users/users'))
 const TaskValidation = React.lazy(() => import('./views/TaskValidation/TaskValidation'))
 const StatisticsEntrepeneurs = React.lazy(() => import('./views/Statistics/EntrepreneurStat'))
-
+const reportingScreen =React.lazy(()=> import('./views/reporting/reportingScreen'))
 
 
 const routes = [
@@ -45,9 +52,20 @@ const routes = [
   },
   
   { path: '/entrepeneurs', name: 'Entrepeneurs', element: EntrepreneursTable },
-  { path: '/entrepeneurs/:id', name: ' entrepeneur', element: entrepeneurDetails },
+  { path: '/entrepeneurs/:id', name: ' entrepeneur', element: EntrepreneurDetails},
   { path: '/category', name: ' categories', element: CategoryMain },
   { path: '/addCategory', name: 'category', element: AddCategoryPage },
+
+  { path: '/Marketing', name: 'Marketing', element: MarketingDashboard },
+  { path: '/EmailForm', name: 'Email', element: EmailForm },
+  { path: '/SuggestedThemes', name: 'Email', element: ThemesScreen },
+  {path:'/NewspaperComposer', name:'AI generated composer', element: newspaperComposer},
+
+  { path: '/users/:id', name: 'UserDetails', element: UserDetails },
+  { path: '/:taskId', name: 'TaskDetails', element: TaskDetails},
+  {path:'/Reporting', name:'Reporting', element: reportingScreen}
+
 ]
 
 export default routes
+

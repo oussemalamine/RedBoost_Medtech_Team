@@ -129,6 +129,45 @@ const AdvancedFilter = ({ entrepreneurs, onFilterUpdate }) => {
             </CCol>
           </CRow>
           <CRow>
+  <CCol md="4">
+    <CFormLabel htmlFor="ageMin">Minimum Age</CFormLabel>
+    <CFormInput
+      type="number"
+      id="ageMin"
+      name="ageMin"
+      value={filters.ageMin}
+      onChange={handleFilterChange}
+      min="0"
+      placeholder="Min Age"
+    />
+  </CCol>
+  <CCol md="4">
+    <CFormLabel htmlFor="ageMax">Maximum Age</CFormLabel>
+    <CFormInput
+      type="number"
+      id="ageMax"
+      name="ageMax"
+      value={filters.ageMax}
+      onChange={handleFilterChange}
+      min="0"
+      placeholder="Max Age"
+    />
+  </CCol>
+  <CCol md="4">
+    <CFormLabel htmlFor="gouvernorat">Gouvernorat</CFormLabel>
+    <CFormSelect name="gouvernorat" value={filters.gouvernorat} onChange={handleFilterChange}>
+      <option value="">All Gouvernorats</option>
+      {gouvernorats.map((gouvernorat) => (
+        <option key={gouvernorat} value={gouvernorat}>
+          {gouvernorat}
+        </option>
+      ))}
+    </CFormSelect>
+  </CCol>
+</CRow>
+
+          <CRow>
+            
             <CCol md="12">
               <CFormLabel htmlFor="search">Search</CFormLabel>
               <div className="input-group">
@@ -141,11 +180,7 @@ const AdvancedFilter = ({ entrepreneurs, onFilterUpdate }) => {
                   value={filters.search}
                   onChange={handleFilterChange}
                 />
-                <CButton type="submit" color="primary" className="input-group-text">
-                  <svg className="icon">
-                    <use xlinkHref={cilSearch}></use>
-                  </svg>
-                </CButton>
+                
               </div>
             </CCol>
           </CRow>
@@ -154,6 +189,7 @@ const AdvancedFilter = ({ entrepreneurs, onFilterUpdate }) => {
             color="primary"
             className="mt-3"
             disabled={!atLeastOneGenderChecked}
+            
           >
             Apply Filters
           </CButton>

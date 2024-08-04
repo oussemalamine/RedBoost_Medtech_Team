@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from 'react';
 import {
   CCard,
   CCol,
@@ -16,7 +17,6 @@ import {
   CPaginationItem,
 } from '@coreui/react';
 import { HiMagnifyingGlassCircle } from 'react-icons/hi2';
-import React, { useState } from 'react';
 import { CChart } from '@coreui/react-chartjs';
 import CIcon from '@coreui/icons-react';
 import { cilCalendar, cilUser } from '@coreui/icons';
@@ -24,22 +24,70 @@ import EditTask from './EditTask';
 import TaskView from './TaskView';
 import AddTask from './AddTask';
 import { createTask } from '../../app/features/task/taskSlice';
+import { loadUserById } from '../../app/features/users/usersSlice';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
 function Activity({ activity, tasks }) {
   const navigate = useNavigate();
+  const dispatch = useDispatch(); // Initialize useDispatch hook
   const [visible, setVisible] = useState(false);
   const [open, setOpen] = useState(false);
   const [selectedTask, setSelectedtask] = useState(null);
   const [addModalVisible, setAddModalVisible] = useState(false);
+  const [userNames, setUserNames] = useState({});
   const itemsPerPage = 4;
   const [currentPage, setCurrentPage] = useState(1);
+
+  useEffect(() => {
+    const fetchAndStoreUserNames = async () => {
+      const userNamesMap = {};
+      const promises = [];
+  
+      for (const task of tasks) {
+        if (!userNamesMap[task.taskOwner]) {
+          console.log(`Fetching user details for user ID: ${task.taskOwner}`);
+          const userDetailsPromise = fetchUserDetails(task.taskOwner)
+            .then(userDetails => {
+              if (userDetails) {
+                userNamesMap[task.taskOwner] = userDetails.username;
+                console.log(`Fetched user details:`, userDetails);
+              } else {
+                console.log(`No user details found for user ID: ${task.taskOwner}`);
+              }
+            })
+            .catch(error => {
+              console.error('Error fetching user details:', error);
+            });
+          promises.push(userDetailsPromise);
+        }
+      }
+  
+      await Promise.all(promises); // Wait for all user details promises to resolve
+      setUserNames(userNamesMap); // Update user names map after all details are fetched
+      console.log('Updated user names map:', userNamesMap);
+    };
+  
+    if (tasks.length > 0) {
+      fetchAndStoreUserNames();
+    }
+  }, [tasks]);
+  
+
+  const fetchUserDetails = async (userId) => {
+    try {
+      const result = await dispatch(loadUserById(userId));
+      console.log('Dispatch result:', result);
+      return result.payload;
+    } catch (error) {
+      console.error('Error fetching user details:', error);
+      return null;
+    }
+  };
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentTasks = tasks.slice(indexOfFirstItem, indexOfLastItem);
-  const dispatch = useDispatch();
   const paginate = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
@@ -81,7 +129,7 @@ function Activity({ activity, tasks }) {
 
   const handleViewTask = (task) => {
     const currentPath = window.location.pathname;
-    navigate(`${currentPath}/${task.taskName}`);
+    navigate(`${currentPath}/${task._id}`);
   };
 
   const TaskStatusCard = ({ status, tasks, color }) => {
@@ -98,7 +146,7 @@ function Activity({ activity, tasks }) {
             }}
           >
             {status}
-          </CCardHeader>
+            </CCardHeader>
           <CCardBody style={{ overflow: 'auto' }}>
             {tasks.map((task, index) => {
               if (task.status === status) {
@@ -115,7 +163,7 @@ function Activity({ activity, tasks }) {
                       <div className="card-body">
                         <div className="text-muted mb-2">
                           <CIcon icon={cilUser} className="mr-1" />
-                          Assigned to: {task.taskOwner}
+                          Assigned to: {userNames[task.taskOwner] || 'Loading...'}
                         </div>
                         <div className="text-muted mb-2">
                           <CIcon icon={cilCalendar} className="mr-1" />

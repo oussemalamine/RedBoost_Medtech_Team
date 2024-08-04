@@ -18,6 +18,27 @@ router.post("/loadCurrentUser", async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
+
+// New route to load a user by ID
+router.post("/loadUserById", async (req, res) => {
+  try {
+    // Retrieve userId from request body
+    const { userId } = req.body;
+
+    // Query the database to get the user with the specified ID
+    const user = await UserModel.findById(userId, { password: 0, confirmation: 0 });
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    res.status(200).json(user);
+  } catch (error) {
+    console.error("Error getting user:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 router.post("/loadUsers", async (req, res) => {
   try {
     // Fetch users from the database
